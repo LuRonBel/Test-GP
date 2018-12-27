@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="patskevich" id="2.1">
+        <insert tableName="ROOM">
+            <column name="ID" valueNumeric="1"/>
+            <column name="NAME" value="Default room"/>
+            <column name="DESCRIPTION" value="Default room"/>
+        </insert>
+    </changeSet>
+    <changeSet author="patskevich" id="2.2">
+        <insert tableName="USER">
+            <column name="ID" valueNumeric="1"/>
+            <column name="NAME" value="root"/>
+            <column name="PASSWORD" value="root"/>
+            <column name="ROOM_ID" valueNumeric="1"/>
+            <column name="ROLE" value="ROLE_ADMIN"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
