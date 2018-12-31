@@ -1,5 +1,6 @@
 package com.patskevich.gpproject.controller;
 
+import com.patskevich.gpproject.dto.NicknameChangeHistoryDto.NicknameChangeHistoryDto;
 import com.patskevich.gpproject.dto.RoomDto.NameRoomDto;
 import com.patskevich.gpproject.dto.RoomDto.RoomDto;
 import com.patskevich.gpproject.dto.UserDto.CreateUserDto;
@@ -45,6 +46,21 @@ public class AdminController {
     @PostMapping("/change_role_user")
     public String changeRoleUser(@RequestBody final UserNameDto userNameDto) {
         return userService.changeRoleUser(userNameDto);
+    }
+
+    @PostMapping("/change_user/{id}/change_name")
+    public String changeUserName(@RequestBody final String newName, @PathVariable("id") final Long id) {
+        return userService.updateUserNameAdmin(newName, id);
+    }
+
+    @PostMapping("/change_user/{id}/change_nickname")
+    public String changeUserNickname(@RequestBody final String newNickname, @PathVariable("id") final Long id) {
+        return userService.updateUserNicknameAdmin(newNickname, id);
+    }
+
+    @GetMapping("/change_history")
+    public List<NicknameChangeHistoryDto> getHistory() {
+        return userService.getHistory();
     }
 
     @DeleteMapping("/delete_user")

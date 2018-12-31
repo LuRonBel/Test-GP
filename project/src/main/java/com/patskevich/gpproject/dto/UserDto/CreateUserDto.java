@@ -8,5 +8,6 @@ import lombok.NoArgsConstructor;
 public class CreateUserDto{
     private Long id;
     private String name;
+    private String nickname;
     private String password;
 }

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 public class UserDto{
     private Long id;
     private String name;
+    private String nickname;
     private String password;
     private Room room;
     private String role;

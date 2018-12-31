@@ -1,14 +1,21 @@
 package com.patskevich.gpproject.service;
 
+import com.patskevich.gpproject.converter.NicknameChangeHistoryConverter;
 import com.patskevich.gpproject.converter.UserConverter;
+import com.patskevich.gpproject.dto.NicknameChangeHistoryDto.NicknameChangeHistoryDto;
 import com.patskevich.gpproject.dto.UserDto.*;
+import com.patskevich.gpproject.entity.NicknameChangeHistory;
 import com.patskevich.gpproject.entity.User;
+import com.patskevich.gpproject.repository.NicknameChangeHistoryRepository;
 import com.patskevich.gpproject.repository.RoomRepository;
 import com.patskevich.gpproject.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,6 +25,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
     private final UserConverter userConverter;
+    private final NicknameChangeHistoryRepository nicknameChangeHistoryRepository;
+    private final NicknameChangeHistoryConverter nicknameChangeHistoryConverter;
 
     public String createUser(final CreateUserDto createUserDto) {
         if (!userRepository.existsByName(createUserDto.getName())) {
@@ -28,14 +37,61 @@ public class UserService {
     }
 
     public String updateUser(final UpdateUserDto updateUserDto) {
-        if (userRepository.existsByName(updateUserDto.getNewName())) {
+        if (!userRepository.existsByNickname(updateUserDto.getNewNickname())) {
             User user = userRepository.findByName(SecurityContextHolder.getContext().getAuthentication().getName());
-            user.setName(updateUserDto.getNewName());
+            NicknameChangeHistory nicknameChangeHistory = new NicknameChangeHistory();
+            nicknameChangeHistory.setNewNickname(updateUserDto.getNewNickname());
+            nicknameChangeHistory.setOldNickname(user.getNickname());
+            nicknameChangeHistory.setUserId(user.getId());
+            nicknameChangeHistory.setDate(new Date());
+            user.setNickname(updateUserDto.getNewNickname());
             user.setPassword(updateUserDto.getNewPassword());
+            nicknameChangeHistoryRepository.save(nicknameChangeHistory);
             userRepository.save(user);
             return "Данные пользователя "+SecurityContextHolder.getContext().getAuthentication().getName()+" были изменены!";
         } else
-            return "Пользователь с именем "+updateUserDto.getNewName()+" уже существует!";
+            return "Пользователь с именем "+updateUserDto.getNewNickname()+" уже существует!";
+    }
+
+    public String updateUserNameAdmin(final String newName, final Long id) {
+        User user = userRepository.getById(id);
+        if (user.getName().equals(newName)) {
+            return "Введенные данные совпадают со старыми";
+        }
+        User findByName = userRepository.findByName(newName);
+        if (findByName != null && !findByName.getId().equals(user.getId())) {
+            return "Пользователь с логином "+newName+" уже существует!";
+        }  else {
+            user.setName(newName);
+            userRepository.save(user);
+            return "Данные успешно изменены";
+        }
+    }
+
+    public String updateUserNicknameAdmin(final String newNickname, final Long id) {
+        User user = userRepository.getById(id);
+        if (user.getNickname().equals(newNickname)) {
+            return "Введенные данные совпадают со старыми";
+        }
+        User findByNickname = userRepository.findByNickname(newNickname);
+        if (findByNickname != null && !findByNickname.getId().equals(user.getId())) {
+            return "Пользователь с никнеймом "+newNickname+" уже существует!";
+        }  else {
+            NicknameChangeHistory nicknameChangeHistory = new NicknameChangeHistory();
+            nicknameChangeHistory.setNewNickname(newNickname);
+            nicknameChangeHistory.setOldNickname(user.getNickname());
+            nicknameChangeHistory.setUserId(user.getId());
+            nicknameChangeHistory.setDate(new Date());
+            user.setNickname(newNickname);
+            nicknameChangeHistoryRepository.save(nicknameChangeHistory);
+            userRepository.save(user);
+            return "Данные успешно изменены";
+        }
+    }
+
+    public List<NicknameChangeHistoryDto> getHistory() {
+        return  nicknameChangeHistoryRepository.findAll().stream()
+                .map(nicknameChangeHistoryConverter::convertToDto).collect(Collectors.toList());
     }
 
     public List<UserDto> getUserList() {
