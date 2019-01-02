@@ -1,5 +1,8 @@
 package com.patskevich.gpproject.controller;
 
+import com.patskevich.gpproject.dto.MessageDto.MessageInputDto;
+import com.patskevich.gpproject.dto.MessageDto.MessageOutputDto;
+import com.patskevich.gpproject.dto.MessageDto.MessageRoomDto;
 import com.patskevich.gpproject.dto.RoomDto.NameRoomDto;
 import com.patskevich.gpproject.dto.RoomDto.RoomDto;
 import com.patskevich.gpproject.dto.UserDto.CreateUserDto;
@@ -9,8 +12,11 @@ import com.patskevich.gpproject.service.MessageService;
 import com.patskevich.gpproject.service.RoomService;
 import com.patskevich.gpproject.service.UserService;
 import lombok.AllArgsConstructor;
+import org.atmosphere.config.service.Get;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.List;
 
 @AllArgsConstructor
@@ -61,10 +67,19 @@ public class AdminController {
     public String deleteMessage(@PathVariable("id") final Long id) {
         return messageService.deleteMessage(id);
     }
+
     /*
      @PostMapping("/room_by_name")
      public RoomDto getRoomByName(@RequestBody final NameRoomDto nameRoomDto) {
      return roomService.getRoomByName(nameRoomDto);
      }
     */
+
+    //    @PutMapping("/edit_message/{id}")
+//    public String editMessage(
+//            @PathVariable("id") final Long id,
+//            @RequestBody final MessageInputDto messageInputDto) {
+//        return messageService.editMessage(id, messageInputDto);
+//    }
+
 }

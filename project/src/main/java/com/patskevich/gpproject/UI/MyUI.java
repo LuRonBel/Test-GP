@@ -114,9 +114,10 @@ public class MyUI extends UI {
     }
 
     private void addGridPanel(){
-        messageGrid.setColumns("author","message");
+        messageGrid.setColumns("author","message","date");
         messageGrid.setFrozenColumnCount(1);
         messageGrid.getColumn("author").setWidth(150);
+        messageGrid.getColumn("date").setWidth(150);
         messageGrid.getColumn("message").setExpandRatio(1);
         updateGrid(userService.getUser(authentication.getName()).getRoom());
         adminForm.setMargin(false);

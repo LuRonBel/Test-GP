@@ -46,4 +46,19 @@ public class UserController {
     public List<MessageOutputDto> getRoomMessage (@RequestBody final MessageRoomDto messageRoomDto) {
         return messageService.getRoomMesage(messageRoomDto);
     }
+
+    @PutMapping("/edit_message/{id}")
+    public String editMessage(
+            @PathVariable("id") final Long id,
+            @RequestBody final MessageInputDto messageInputDto) {
+        return messageService.editMessage(id, messageInputDto);
+    }
+
+    @GetMapping("/search")
+    public List<MessageOutputDto> findMessages(
+            @RequestBody final MessageRoomDto roomDto,
+            @RequestParam(name = "fromDate") final String fromDate,
+            @RequestParam(name = "toDate") final String toDate) {
+        return messageService.findMessages(roomDto, fromDate, toDate);
+    }
 }

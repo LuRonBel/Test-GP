@@ -18,6 +18,7 @@ public class MessageConverter {
         final MessageOutputDto messageOutputDto= new MessageOutputDto();
         messageOutputDto.setMessage(message.getMessage());
         messageOutputDto.setAuthor(message.getAuthor().getName());
+        messageOutputDto.setDate(message.getDate());
         return messageOutputDto;
     }
 
@@ -35,6 +36,8 @@ public class MessageConverter {
                         .getName())
                 .getRoom());
         message.setMessage(messageInputDto.getMessage());
+        message.setId(messageInputDto.getId());
+        message.setDate(messageInputDto.getDate());
         return message;
     }
 

@@ -74,4 +74,11 @@
                           startWith="1"
                           tableName="USER"/>
     </changeSet>
+    <changeSet id="1.7" author="bely">
+        <addColumn tableName="MESSAGE">
+            <column name="DATE" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
