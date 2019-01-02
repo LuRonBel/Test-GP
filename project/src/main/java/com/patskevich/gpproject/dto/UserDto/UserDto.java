@@ -6,10 +6,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class UserDto{
-    private Long id;
-    private String name;
-    private String password;
+public class UserDto {
+    private String login;
+    private String nickname;
     private Room room;
     private String role;
 }

@@ -6,6 +6,5 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class UpdateUserDto{
-    private String newName;
-    private String newPassword;
+    private String newNickname;
 }

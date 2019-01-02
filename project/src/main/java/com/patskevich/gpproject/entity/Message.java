@@ -22,6 +22,9 @@ public class Message {
     @NotNull
     private String message;
 
+    @NotNull
+    private String date;
+
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "USER_ID", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)

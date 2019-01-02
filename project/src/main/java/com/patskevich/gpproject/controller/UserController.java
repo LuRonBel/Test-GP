@@ -1,14 +1,17 @@
 package com.patskevich.gpproject.controller;
 
+import com.patskevich.gpproject.dto.MessageDto.MessageCorrectDto;
+import com.patskevich.gpproject.dto.MessageDto.MessageDateDto;
 import com.patskevich.gpproject.dto.MessageDto.MessageInputDto;
 import com.patskevich.gpproject.dto.MessageDto.MessageOutputDto;
-import com.patskevich.gpproject.dto.MessageDto.MessageRoomDto;
+import com.patskevich.gpproject.dto.RoomDto.NameRoomDto;
 import com.patskevich.gpproject.dto.RoomDto.RoomDto;
 import com.patskevich.gpproject.dto.UserDto.*;
 import com.patskevich.gpproject.service.MessageService;
 import com.patskevich.gpproject.service.RoomService;
 import com.patskevich.gpproject.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,14 +25,25 @@ public class UserController {
     private final RoomService roomService;
     private final MessageService messageService;
 
-    @PostMapping("/update_user")
-    public String updateUser(@RequestBody final UpdateUserDto updateUserDto) {
-        return userService.updateUser(updateUserDto);
+    @PostMapping("/change_nickname")
+    public String changeUserNickname(@RequestBody final UpdateUserDto updateUserDto) {
+        return userService.changeUserNickname(updateUserDto, SecurityContextHolder
+                .getContext()
+                .getAuthentication().getName());
+    }
+
+    @PostMapping("/correct_message")
+    public String correctMessage(@RequestBody final MessageCorrectDto messageCorrectDto) {
+        return messageService.correctMessage(messageCorrectDto, SecurityContextHolder
+                .getContext()
+                .getAuthentication().getName());
     }
 
     @PostMapping("/change_room")
-    public String changeRoom(@RequestBody final UserChangeRoom userChangeRoom) {
-        return userService.changeRoom(userChangeRoom);
+    public String changeRoom(@RequestBody final NameRoomDto nameRoomDto) {
+        return userService.changeRoom(nameRoomDto,SecurityContextHolder
+                .getContext()
+                .getAuthentication().getName());
     }
 
     @GetMapping("/list_room")
@@ -39,11 +53,22 @@ public class UserController {
 
     @PostMapping("/add_message")
     public String addMessage(@RequestBody final MessageInputDto messageInputDto) {
-        return messageService.addMessage(messageInputDto);
+        return messageService.addMessage(messageInputDto, SecurityContextHolder
+                .getContext()
+                .getAuthentication().getName());
     }
 
     @GetMapping("/list_message")
-    public List<MessageOutputDto> getRoomMessage (@RequestBody final MessageRoomDto messageRoomDto) {
-        return messageService.getRoomMesage(messageRoomDto);
+    public List<MessageOutputDto> getRoomMessage () {
+        return messageService.getRoomMessage(SecurityContextHolder
+                .getContext()
+                .getAuthentication().getName());
+    }
+
+    @GetMapping("/list_message_date")
+    public List<MessageOutputDto> getMessageByDate (@RequestBody final MessageDateDto messageDateDto) {
+        return messageService.getMessageByDate(SecurityContextHolder
+                .getContext()
+                .getAuthentication().getName(), messageDateDto.getDateFrom(), messageDateDto.getDateTo());
     }
 }

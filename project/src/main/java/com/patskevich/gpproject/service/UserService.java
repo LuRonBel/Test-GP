@@ -1,14 +1,15 @@
 package com.patskevich.gpproject.service;
 
 import com.patskevich.gpproject.converter.UserConverter;
+import com.patskevich.gpproject.dto.RoomDto.NameRoomDto;
 import com.patskevich.gpproject.dto.UserDto.*;
 import com.patskevich.gpproject.entity.User;
 import com.patskevich.gpproject.repository.RoomRepository;
 import com.patskevich.gpproject.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,24 +19,22 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
     private final UserConverter userConverter;
+    private final NicknameLogService nicknameLogService;
 
     public String createUser(final CreateUserDto createUserDto) {
-        if (!userRepository.existsByName(createUserDto.getName())) {
-            userRepository.save(userConverter.convertToDbo(createUserDto));
-            return "Пользователь "+createUserDto.getName()+" был создан!";
+        if (!userRepository.existsByLogin(createUserDto.getLogin())) {
+                userRepository.save(userConverter.convertToDbo(createUserDto));
+            return "Пользователь "+createUserDto.getLogin()+" был создан!";
         } else
-            return "Пользователь "+createUserDto.getName()+" уже существует!";
+            return "Пользователь "+createUserDto.getLogin()+" уже существует!";
     }
 
-    public String updateUser(final UpdateUserDto updateUserDto) {
-        if (userRepository.existsByName(updateUserDto.getNewName())) {
-            User user = userRepository.findByName(SecurityContextHolder.getContext().getAuthentication().getName());
-            user.setName(updateUserDto.getNewName());
-            user.setPassword(updateUserDto.getNewPassword());
-            userRepository.save(user);
-            return "Данные пользователя "+SecurityContextHolder.getContext().getAuthentication().getName()+" были изменены!";
-        } else
-            return "Пользователь с именем "+updateUserDto.getNewName()+" уже существует!";
+    public String changeUserNickname(final UpdateUserDto updateUserDto, final String login) {
+        User user = userRepository.findByLogin(login);
+        nicknameLogService.createLog(login, user.getNickname(), updateUserDto.getNewNickname());
+        user.setNickname(updateUserDto.getNewNickname());
+        userRepository.save(user);
+        return "Никнейм пользователя "+login+" был изменён!";
     }
 
     public List<UserDto> getUserList() {
@@ -43,45 +42,55 @@ public class UserService {
     }
 
     public String deleteUser(final UserNameDto nameUserDto) {
-        if (userRepository.existsByName(nameUserDto.getName())) {
-            userRepository.delete(userRepository.findByName(nameUserDto.getName()));
-            return "Пользователь "+nameUserDto.getName()+" был удален!";
-        } else
-            return "Пользователя "+nameUserDto.getName()+" не существует!";
+        if (nameUserDto.getName().equals("root")) return "Этого пользователя удалить нельзя!";
+        else if (userRepository.existsByLogin(nameUserDto.getName())) {
+                 userRepository.delete(userRepository.findByLogin(nameUserDto.getName()));
+                 return "Пользователь "+nameUserDto.getName()+" был удален!";
+             } else
+                 return "Пользователя "+nameUserDto.getName()+" не существует!";
     }
 
-    public UserDto getUser(final String name) {
-        return userConverter.convertToDto(userRepository.findByName(name));
+    public User getUser(final String name) {
+        return userRepository.findByLogin(name);
     }
 
-    public String changeRoom(final UserChangeRoom userChangeRoom) {
-        if (roomRepository.existsByName(userChangeRoom.getRoom())) {
-            User user = userRepository.findByName(SecurityContextHolder.getContext().getAuthentication().getName());
-            user.setRoom(roomRepository.findByName(userChangeRoom.getRoom()));
+    public String changeRoom(final NameRoomDto nameRoomDto, final String login) {
+        if (roomRepository.existsByName(nameRoomDto.getName())) {
+            final User user = userRepository.findByLogin(login);
+            user.setRoom(roomRepository.findByName(nameRoomDto.getName()));
             userRepository.save(user);
-            return "Пользователь "+SecurityContextHolder.getContext().getAuthentication().getName()+" переместился в комнату "+userChangeRoom.getRoom()+"!";
+            return "Пользователь "+login+" переместился в комнату "+nameRoomDto.getName()+"!";
         } else
-            return "Комнаты с именем "+userChangeRoom.getRoom()+" не существует!";
+            return "Комнаты с именем "+nameRoomDto.getName()+" не существует!";
     }
 
-    public String changeRoom(final String name) {
+    public String changeRoom(final String name, final String login) {
         if (roomRepository.existsByName(name)) {
-            User user = userRepository.findByName(SecurityContextHolder.getContext().getAuthentication().getName());
+            User user = userRepository.findByLogin(login);
             user.setRoom(roomRepository.findByName(name));
             userRepository.save(user);
-            return "Пользователь "+SecurityContextHolder.getContext().getAuthentication().getName()+" переместился в комнату "+name+"!";
+            return "Пользователь "+login+" переместился в комнату "+name+"!";
         } else
             return "Комнаты с именем "+name+" не существует!";
     }
 
     public String changeRoleUser(final UserNameDto userNameDto) {
-        if (userRepository.existsByName(userNameDto.getName())) {
-            User user = userRepository.findByName(userNameDto.getName());
-            if (user.getRole().equals("ROLE_USER")) user.setRole("ROLE_ADMIN");
-                    else user.setRole("ROLE_USER");
-            userRepository.save(user);
-            return "Пользователь "+userNameDto.getName()+" изменил роль на "+user.getRole();
-        } else
-            return "Пользователя с именем "+userNameDto.getName()+" не существует!";
+        if (userNameDto.getName().equals("root")) return "Нельзя изменить этого пользователя";
+            else if (userRepository.existsByLogin(userNameDto.getName())) {
+                final User user = userRepository.findByLogin(userNameDto.getName());
+                if (user.getRole().equals("ROLE_USER")) user.setRole("ROLE_ADMIN");
+                else user.setRole("ROLE_USER");
+                userRepository.save(user);
+                return "Пользователь "+userNameDto.getName()+" изменил роль на "+user.getRole();
+            } else return "Пользователя с именем "+userNameDto.getName()+" не существует!";
+    }
+
+    public List<String> getNameUserList(){
+        final List<User> userList = userRepository.findAll();
+        final List<String> nameUserList = new ArrayList<>();
+        for (User user: userList) {
+            nameUserList.add(user.getLogin());
+        }
+        return nameUserList;
     }
 }

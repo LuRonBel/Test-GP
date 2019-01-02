@@ -12,24 +12,23 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserConverter {
 
-    RoomRepository roomRepository;
+    private final RoomRepository roomRepository;
 
     public UserDto convertToDto(final User user) {
         final UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(user, userDto);
+        userDto.setLogin(user.getLogin());
+        userDto.setNickname(user.getNickname());
+        userDto.setRoom(user.getRoom());
+        userDto.setRole(user.getRole());
         return userDto;
     }
 
-    public User convertToDbo(final UserDto userDto) {
-        final User user = new User();
-        BeanUtils.copyProperties(userDto, user);
-        return user;
-    }
 
     public User convertToDbo(final CreateUserDto createUserDto) {
         final User user = new User();
-        user.setName(createUserDto.getName());
+        user.setLogin(createUserDto.getLogin());
         user.setPassword(createUserDto.getPassword());
+        user.setNickname("New user");
         user.setRoom(roomRepository.findByName("Default room"));
         user.setRole("ROLE_USER");
         return user;

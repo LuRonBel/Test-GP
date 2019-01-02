@@ -23,6 +23,9 @@
             <column name="MESSAGE" type="VARCHAR(64)">
                 <constraints nullable="false"/>
             </column>
+            <column name="DATE" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
             <column name="USER_ID" type="INT">
                 <constraints nullable="false"/>
             </column>
@@ -36,10 +39,13 @@
             <column name="ID" type="INT">
                 <constraints nullable="false"/>
             </column>
-            <column name="NAME" type="VARCHAR(64)">
+            <column name="LOGIN" type="VARCHAR(64)">
                 <constraints nullable="false"/>
             </column>
             <column name="PASSWORD" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NICKNAME" type="VARCHAR(64)">
                 <constraints nullable="false"/>
             </column>
             <column name="ROOM_ID" type="INT">

@@ -1,6 +1,6 @@
 package com.patskevich.gpproject.service;
 
-import com.patskevich.gpproject.dto.UserDto.UserDto;
+import com.patskevich.gpproject.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,14 +26,14 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        UserDto user = userService.getUser(login);
+        User user = userService.getUser(login);
         System.out.println("----------АВТОРИЗАЦИЯ-----------:"+user);
         if (user == null) {
             throw new UsernameNotFoundException(login);
         }
 
         return new org.springframework.security.core.userdetails.User(
-                user.getName(), encoder().encode(user.getPassword()), true, true, true,
+                user.getLogin(), encoder().encode(user.getPassword()), true, true, true,
                 true, getAuthorities(user.getRole()));
     }
 

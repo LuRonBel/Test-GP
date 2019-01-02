@@ -1,11 +1,13 @@
 package com.patskevich.gpproject.controller;
 
+import com.patskevich.gpproject.dto.NicknameLogDto;
 import com.patskevich.gpproject.dto.RoomDto.NameRoomDto;
 import com.patskevich.gpproject.dto.RoomDto.RoomDto;
 import com.patskevich.gpproject.dto.UserDto.CreateUserDto;
 import com.patskevich.gpproject.dto.UserDto.UserDto;
 import com.patskevich.gpproject.dto.UserDto.UserNameDto;
 import com.patskevich.gpproject.service.MessageService;
+import com.patskevich.gpproject.service.NicknameLogService;
 import com.patskevich.gpproject.service.RoomService;
 import com.patskevich.gpproject.service.UserService;
 import lombok.AllArgsConstructor;
@@ -21,6 +23,7 @@ public class AdminController {
     private final RoomService roomService;
     private final UserService userService;
     private final MessageService messageService;
+    private final NicknameLogService nicknameLogService;
 
     @PostMapping("/create_room")
     public String createRoom(@RequestBody final RoomDto room) {
@@ -57,14 +60,13 @@ public class AdminController {
         return userService.getUserList();
     }
 
+    @GetMapping("/log")
+    public List<NicknameLogDto> getLog() {
+        return nicknameLogService.getNicknameLog();
+    }
+
     @DeleteMapping("/delete_message/{id}")
     public String deleteMessage(@PathVariable("id") final Long id) {
         return messageService.deleteMessage(id);
     }
-    /*
-     @PostMapping("/room_by_name")
-     public RoomDto getRoomByName(@RequestBody final NameRoomDto nameRoomDto) {
-     return roomService.getRoomByName(nameRoomDto);
-     }
-    */
 }

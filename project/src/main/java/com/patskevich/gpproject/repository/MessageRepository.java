@@ -10,8 +10,9 @@ import java.util.List;
 
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
-    List<Message> findAllByRoom(Room room);
-    List<Message> findAllByRoomOrderByIdDesc(Room room);
-    void deleteAllByRoom(Room room);
-    Message findByRoom(Room byName);
+    public List<Message> findAllByRoom(final Room room);
+    public List<Message> findAllByRoomOrderByIdDesc(final Room room);
+    public void deleteAllByRoom(final Room room);
+    public Message findByRoom(final Room byName);
+    public Message getById(final Long id);
 }
