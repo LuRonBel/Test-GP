@@ -27,13 +27,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         User user = userService.getUser(login);
-        System.out.println("----------АВТОРИЗАЦИЯ-----------:"+user);
         if (user == null) {
             throw new UsernameNotFoundException(login);
         }
 
         return new org.springframework.security.core.userdetails.User(
-                user.getLogin(), encoder().encode(user.getPassword()), true, true, true,
+                user.getLogin(), user.getPassword(), true, true, true,
                 true, getAuthorities(user.getRole()));
     }
 
@@ -44,8 +43,4 @@ public class CustomUserDetailsService implements UserDetailsService {
         return authorities;
     }
 
-    @Autowired
-    private PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder();
-    }
 }

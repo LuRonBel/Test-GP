@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface  RoomRepository extends JpaRepository<Room, Long> {
-    public Room findByName(final String name);
-    public boolean existsByName (final String name);
+    Room findByName(final String name);
+    boolean existsByName (final String name);
 }

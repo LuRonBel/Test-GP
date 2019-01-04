@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface NicknameLogRepository extends JpaRepository<NicknameLog, Long> {
 
-    public List<NicknameLog> findAll();
-    public List<NicknameLog> findAllByOrderByIdDesc();
+    List<NicknameLog> findAll();
+    List<NicknameLog> findAllByOrderByIdDesc();
 }
 

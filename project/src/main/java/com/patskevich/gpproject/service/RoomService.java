@@ -50,7 +50,7 @@ public class RoomService {
             final Room room  = roomRepository.findByName(roomDto.getName());
             room.setDescription(roomDto.getDescription());
             roomRepository.save(room);
-            return "Команта "+roomDto.getName()+" была обновлена!";
+            return "Комната "+roomDto.getName()+" была обновлена!";
         } else
             return "Комнаты "+roomDto.getName()+" не существует!";
     }

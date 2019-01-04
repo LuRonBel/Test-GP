@@ -18,9 +18,6 @@ import javax.sql.DataSource;
 public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    DataSource dataSource;
-
-    @Autowired
     private UserDetailsService userDetailsService;
 
     @Autowired
@@ -28,12 +25,6 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-/*
-       auth
-                .inMemoryAuthentication()
-                .withUser("admin").password(encoder().encode("admin")).roles("ADMIN")
-                .and()
-                .withUser("user").password(encoder().encode("user")).roles("USER");*/
        auth.userDetailsService(userDetailsService).passwordEncoder(encoder());
     }
 

@@ -7,6 +7,9 @@ import com.patskevich.gpproject.entity.User;
 import com.patskevich.gpproject.repository.RoomRepository;
 import com.patskevich.gpproject.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +26,7 @@ public class UserService {
 
     public String createUser(final CreateUserDto createUserDto) {
         if (!userRepository.existsByLogin(createUserDto.getLogin())) {
+                createUserDto.setPassword(encoder().encode(createUserDto.getPassword()));
                 userRepository.save(userConverter.convertToDbo(createUserDto));
             return "Пользователь "+createUserDto.getLogin()+" был создан!";
         } else
@@ -30,7 +34,7 @@ public class UserService {
     }
 
     public String changeUserNickname(final UpdateUserDto updateUserDto, final String login) {
-        User user = userRepository.findByLogin(login);
+        final User user = userRepository.findByLogin(login);
         nicknameLogService.createLog(login, user.getNickname(), updateUserDto.getNewNickname());
         user.setNickname(updateUserDto.getNewNickname());
         userRepository.save(user);
@@ -66,7 +70,7 @@ public class UserService {
 
     public String changeRoom(final String name, final String login) {
         if (roomRepository.existsByName(name)) {
-            User user = userRepository.findByLogin(login);
+            final User user = userRepository.findByLogin(login);
             user.setRoom(roomRepository.findByName(name));
             userRepository.save(user);
             return "Пользователь "+login+" переместился в комнату "+name+"!";
@@ -92,5 +96,20 @@ public class UserService {
             nameUserList.add(user.getLogin());
         }
         return nameUserList;
+    }
+
+    public String changeUserLoginAndPass(final CreateUserDto createUserDto, final String login) {
+        if (!userRepository.existsByLogin(createUserDto.getLogin())) {
+            final User user = userRepository.findByLogin(login);
+            user.setPassword(encoder().encode(createUserDto.getPassword()));
+            user.setLogin(createUserDto.getLogin());
+            userRepository.save(user);
+        } else return "Такой логин уже существует.";
+        return "Логин и пароль были изменены!";
+    }
+
+    @Autowired
+    private PasswordEncoder encoder() {
+        return new BCryptPasswordEncoder();
     }
 }

@@ -105,14 +105,14 @@ public class MessageServiceTest {
         final String answer1 = messageService.correctMessage(messageCorrectDto, user.getLogin());
 
         assertEquals("Сообщение с ID № " + messageCorrectDto.getId() + " было отредактировано!", answer1);
-        assertEquals(messageCorrectDto.getMessage()+" | ОТРЕДАКТИРОВАНО", message.getMessage());
+        assertEquals(messageCorrectDto.getMessage()+" | edited", message.getMessage());
 
         user.setRole("ROLE_ADMIN");
 
         final String answer2 = messageService.correctMessage(messageCorrectDto, user.getLogin());
 
         assertEquals("Сообщение с ID № " + messageCorrectDto.getId() + " было отредактировано!", answer2);
-        assertEquals(messageCorrectDto.getMessage()+" | ОТРЕДАКТИРОВАНО АДМИНИСТРАТОРОМ", message.getMessage());
+        assertEquals(messageCorrectDto.getMessage()+" | edited by admin", message.getMessage());
         verify(messageRepository, times(2)).save(message);
     }
 

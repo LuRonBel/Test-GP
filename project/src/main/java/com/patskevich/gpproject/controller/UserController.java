@@ -71,4 +71,11 @@ public class UserController {
                 .getContext()
                 .getAuthentication().getName(), messageDateDto.getDateFrom(), messageDateDto.getDateTo());
     }
+
+    @PostMapping("/change_login")
+    public String changeUserLoginAndPass(@RequestBody final CreateUserDto createUserDto) {
+        return userService.changeUserLoginAndPass(createUserDto, SecurityContextHolder
+                .getContext()
+                .getAuthentication().getName());
+    }
 }

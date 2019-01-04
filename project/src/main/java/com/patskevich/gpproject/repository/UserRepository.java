@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>{
-    public User findByLogin(final String name);
-    public boolean existsByLogin (final String name);
-    public List<User> findAllByRoom(final Room room);
+    User findByLogin(final String name);
+    boolean existsByLogin (final String name);
+    List<User> findAllByRoom(final Room room);
 }

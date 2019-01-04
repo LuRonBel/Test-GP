@@ -28,6 +28,7 @@ public class MessageService {
     private final MessageRepository messageRepository;
     private final MessageConverter messageConverter;
     private final RoomRepository roomRepository;
+    private final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 
     public String addMessage(final MessageInputDto messageInputDto, final String login) {
         messageRepository.save(messageConverter.convertToDbo(messageInputDto, login));
@@ -45,14 +46,6 @@ public class MessageService {
                 .getName()+".";
     }
 
-    @Deprecated
-    public List<MessageOutputDto> getRoomMessage(final NameRoomDto nameRoomDto) {
-        return messageRepository.findAllByRoomOrderByIdDesc(roomRepository.findByName(nameRoomDto.getName()))
-                .stream()
-                .map(messageConverter::convertToDto)
-                .collect(Collectors.toList());
-    }
-
     public List<MessageOutputDto> getRoomMessage(final String login) {
         return messageRepository.findAllByRoomOrderByIdDesc(userRepository.findByLogin(login).getRoom())
                 .stream()
@@ -67,15 +60,15 @@ public class MessageService {
         } else return "Cообщения с ID № "+ id +" не существует!";
     }
 
-    public String correctMessage(MessageCorrectDto messageCorrectDto, final String login) {
+    public String correctMessage(final MessageCorrectDto messageCorrectDto, final String login) {
         if (messageRepository.existsById(messageCorrectDto.getId())) {
             final Message message = messageRepository.getById(messageCorrectDto.getId());
             if (userRepository.findByLogin(login).getRole().equals("ROLE_ADMIN")) {
-                message.setMessage(messageCorrectDto.getMessage() + " | ОТРЕДАКТИРОВАНО АДМИНИСТРАТОРОМ");
+                message.setMessage(messageCorrectDto.getMessage() + " | edited by admin");
                 messageRepository.save(message);
                 return "Сообщение с ID № " + messageCorrectDto.getId() + " было отредактировано!";
             } else if (message.getAuthor().getLogin().equals(login)) {
-                message.setMessage(messageCorrectDto.getMessage() + " | ОТРЕДАКТИРОВАНО");
+                message.setMessage(messageCorrectDto.getMessage() + " | edited");
                 messageRepository.save(message);
                 return "Сообщение с ID № " + messageCorrectDto.getId() + " было отредактировано!";
             } else return "У вас недостаточно прав";
@@ -83,7 +76,6 @@ public class MessageService {
     }
 
     public List<MessageOutputDto> getMessageByDate(final String login, final String dateFrom, final String dateTo){
-        final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         final List<MessageOutputDto> list = messageRepository.findAllByRoomOrderByIdDesc(userRepository.findByLogin(login).getRoom())
                 .stream()
                 .map(messageConverter::convertToDto)
