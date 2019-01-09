@@ -22,7 +22,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
     private final UserConverter userConverter;
-    private final NicknameLogService nicknameLogService;
 
     public String createUser(final CreateUserDto createUserDto) {
         if (!userRepository.existsByLogin(createUserDto.getLogin())) {
@@ -31,14 +30,6 @@ public class UserService {
             return "Пользователь "+createUserDto.getLogin()+" был создан!";
         } else
             return "Пользователь "+createUserDto.getLogin()+" уже существует!";
-    }
-
-    public String changeUserNickname(final UpdateUserDto updateUserDto, final String login) {
-        final User user = userRepository.findByLogin(login);
-        nicknameLogService.createLog(login, user.getNickname(), updateUserDto.getNewNickname());
-        user.setNickname(updateUserDto.getNewNickname());
-        userRepository.save(user);
-        return "Никнейм пользователя "+login+" был изменён!";
     }
 
     public List<UserDto> getUserList() {
@@ -96,16 +87,6 @@ public class UserService {
             nameUserList.add(user.getLogin());
         }
         return nameUserList;
-    }
-
-    public String changeUserLoginAndPass(final CreateUserDto createUserDto, final String login) {
-        if (!userRepository.existsByLogin(createUserDto.getLogin())) {
-            final User user = userRepository.findByLogin(login);
-            user.setPassword(encoder().encode(createUserDto.getPassword()));
-            user.setLogin(createUserDto.getLogin());
-            userRepository.save(user);
-        } else return "Такой логин уже существует.";
-        return "Логин и пароль были изменены!";
     }
 
     @Autowired
