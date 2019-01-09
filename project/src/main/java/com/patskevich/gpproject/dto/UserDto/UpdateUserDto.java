@@ -7,5 +7,4 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateUserDto{
     private String newNickname;
-    private String newPassword;
 }
