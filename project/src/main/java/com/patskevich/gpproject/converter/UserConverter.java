@@ -28,7 +28,6 @@ public class UserConverter {
         final User user = new User();
         user.setLogin(createUserDto.getLogin());
         user.setPassword(createUserDto.getPassword());
-        user.setNickname("New user");
         user.setRoom(roomRepository.findByName("Default room"));
         user.setRole("ROLE_USER");
         return user;
