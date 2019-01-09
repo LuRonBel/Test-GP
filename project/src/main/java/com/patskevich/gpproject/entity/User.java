@@ -21,9 +21,6 @@ public class User {
     @NotNull
     private String password;
 
-    @NotNull
-    private String nickname;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ROOM_ID", nullable = false)
     private Room room;
