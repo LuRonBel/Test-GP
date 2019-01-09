@@ -45,9 +45,6 @@
             <column name="PASSWORD" type="VARCHAR(64)">
                 <constraints nullable="false"/>
             </column>
-            <column name="NICKNAME" type="VARCHAR(64)">
-                <constraints nullable="false"/>
-            </column>
             <column name="ROOM_ID" type="INT">
             <constraints nullable="false"/>
             </column>
