@@ -28,7 +28,6 @@ public class MessageService {
     private final MessageRepository messageRepository;
     private final MessageConverter messageConverter;
     private final RoomRepository roomRepository;
-    private final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 
     public String addMessage(final MessageInputDto messageInputDto, final String login) {
         messageRepository.save(messageConverter.convertToDbo(messageInputDto, login));
@@ -75,22 +74,4 @@ public class MessageService {
         } else return "Такого сообщения не существует!";
     }
 
-    public List<MessageOutputDto> getMessageByDate(final String login, final String dateFrom, final String dateTo){
-        final List<MessageOutputDto> list = messageRepository.findAllByRoomOrderByIdDesc(userRepository.findByLogin(login).getRoom())
-                .stream()
-                .map(messageConverter::convertToDto)
-                .collect(Collectors.toList());
-        final List<MessageOutputDto> newList = new ArrayList<>();
-        for (MessageOutputDto message: list) {
-            try {
-                if ( format.parse(message.getDate()).after(format.parse(dateFrom)) &&
-                        format.parse(message.getDate()).before(format.parse(dateTo))  ) {
-                    newList.add(message);
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-        return newList;
-    }
 }

@@ -8,5 +8,4 @@ import lombok.NoArgsConstructor;
 public class MessageOutputDto {
     private String message;
     private String author;
-    private String date;
 }

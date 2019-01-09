@@ -112,6 +112,7 @@ public class UiService {
         CreateUserDto user = new CreateUserDto();
         user.setLogin(login);
         user.setPassword(password);
+        user.setNickname("New user");
         return userService.createUser(user);
     }
 

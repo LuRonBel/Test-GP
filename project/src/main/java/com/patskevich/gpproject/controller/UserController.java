@@ -1,7 +1,6 @@
 package com.patskevich.gpproject.controller;
 
 import com.patskevich.gpproject.dto.MessageDto.MessageCorrectDto;
-import com.patskevich.gpproject.dto.MessageDto.MessageDateDto;
 import com.patskevich.gpproject.dto.MessageDto.MessageInputDto;
 import com.patskevich.gpproject.dto.MessageDto.MessageOutputDto;
 import com.patskevich.gpproject.dto.RoomDto.NameRoomDto;
@@ -64,12 +63,4 @@ public class UserController {
                 .getContext()
                 .getAuthentication().getName());
     }
-
-    @GetMapping("/list_message_date")
-    public List<MessageOutputDto> getMessageByDate (@RequestBody final MessageDateDto messageDateDto) {
-        return messageService.getMessageByDate(SecurityContextHolder
-                .getContext()
-                .getAuthentication().getName(), messageDateDto.getDateFrom(), messageDateDto.getDateTo());
-    }
-
 }

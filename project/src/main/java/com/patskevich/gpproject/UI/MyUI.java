@@ -128,12 +128,10 @@ public class MyUI extends UI {
     }
 
     private void addGridPanel() {
-        messageGrid.setColumns("author", "date", "message");
+        messageGrid.setColumns("author", "message");
         messageGrid.setFrozenColumnCount(1);
         messageGrid.getColumn("author").setMinimumWidth(150);
         messageGrid.getColumn("author").setWidth(150);
-        messageGrid.getColumn("date").setMinimumWidth(150);
-        messageGrid.getColumn("date").setWidth(150);
         uiService.updateGrid(auth.getName(), messageGrid);
         adminForm.setMargin(false);
         userForm.setMargin(false);

@@ -15,13 +15,11 @@ import java.util.Date;
 public class MessageConverter {
 
     private final UserRepository userRepository;
-    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
     public MessageOutputDto convertToDto(final Message message) {
         final MessageOutputDto messageOutputDto= new MessageOutputDto();
         messageOutputDto.setMessage(message.getMessage());
         messageOutputDto.setAuthor(message.getAuthor().getNickname());
-        messageOutputDto.setDate(message.getDate());
         return messageOutputDto;
     }
 
@@ -30,7 +28,6 @@ public class MessageConverter {
         message.setAuthor(userRepository.findByLogin(login));
         message.setRoom(userRepository.findByLogin(login).getRoom());
         message.setMessage(messageInputDto.getMessage());
-        message.setDate(simpleDateFormat.format(new Date()));
         return message;
     }
 
@@ -39,7 +36,6 @@ public class MessageConverter {
         message.setAuthor(userRepository.findByLogin(login));
         message.setRoom(userRepository.findByLogin(login).getRoom());
         message.setMessage(messageText);
-        message.setDate(simpleDateFormat.format(new Date()));
         return message;
     }
 }

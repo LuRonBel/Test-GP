@@ -11,7 +11,6 @@ public class MockDataMessage {
         final Message message = new Message();
         message.setId(new Long(1));
         message.setMessage("message");
-        message.setDate("01.01.2019");
         message.setAuthor(null);
         message.setRoom(null);
         return message;
@@ -34,7 +33,6 @@ public class MockDataMessage {
         final MessageOutputDto messageOutputDt = new MessageOutputDto();
         messageOutputDt.setAuthor(null);
         messageOutputDt.setMessage("message");
-        messageOutputDt.setDate("01.01.2019");
         return messageOutputDt;
     }
 }

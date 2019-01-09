@@ -30,10 +30,6 @@ public class MessageConverterTest {
     @Mock
     private UserRepository userRepository;
 
-    @Spy
-    private SimpleDateFormat simpleDateFormat;
-
-
     @Test
     public void convertToDto() {
 
@@ -45,7 +41,6 @@ public class MessageConverterTest {
 
         assertEquals(messageOutputDto.getMessage(), message.getMessage());
         assertEquals(messageOutputDto.getAuthor(), message.getAuthor().getNickname());
-        assertEquals(messageOutputDto.getDate(), message.getDate());
     }
 
     @Test
@@ -63,6 +58,5 @@ public class MessageConverterTest {
         assertEquals(author, message.getAuthor());
         assertEquals(room, message.getRoom());
         assertEquals(messageInputDto.getMessage(), message.getMessage());
-        assertEquals(new SimpleDateFormat("dd.MM.yyyy").format(new Date()), message.getDate());
     }
 }

@@ -23,9 +23,6 @@
             <column name="MESSAGE" type="VARCHAR(64)">
                 <constraints nullable="false"/>
             </column>
-            <column name="DATE" type="VARCHAR(64)">
-                <constraints nullable="false"/>
-            </column>
             <column name="USER_ID" type="INT">
                 <constraints nullable="false"/>
             </column>
