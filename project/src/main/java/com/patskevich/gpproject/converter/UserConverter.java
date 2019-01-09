@@ -16,7 +16,10 @@ public class UserConverter {
 
     public UserDto convertToDto(final User user) {
         final UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(user, userDto);
+        userDto.setLogin(user.getLogin());
+        userDto.setNickname(user.getNickname());
+        userDto.setRoom(user.getRoom());
+        userDto.setRole(user.getRole());
         return userDto;
     }
 
