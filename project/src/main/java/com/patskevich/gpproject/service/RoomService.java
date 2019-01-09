@@ -31,26 +31,26 @@ public class RoomService {
             roomRepository.save(roomConverter.convertToDbo(roomDto));
             return "Команта "+roomDto.getName()+" была создана!";
         } else
-            return "Комнаты "+roomDto.getName()+" уже существует!";
+            return "Комната "+roomDto.getName()+" уже существует!";
     }
 
     public String deleteRoom(final NameRoomDto deleteRoomDto) {
-        if (roomRepository.existsByName(deleteRoomDto.getName())) {
-                setDefaultRoom(deleteRoomDto);
-                deleteMessageFromRoom(deleteRoomDto);
-                roomRepository.delete(roomRepository.findByName(deleteRoomDto.getName()));
-                return "Команта "+deleteRoomDto.getName()+" была удалена!";
-        } else
-                return "Комнаты "+deleteRoomDto.getName()+" не существует!";
+        if (deleteRoomDto.getName().equals("Default room")) return "Эту комнату удалить нельзя!";
+        else if (roomRepository.existsByName(deleteRoomDto.getName())) {
+                    setDefaultRoom(deleteRoomDto.getName());
+                    deleteMessageFromRoom(deleteRoomDto.getName());
+                    roomRepository.delete(roomRepository.findByName(deleteRoomDto.getName()));
+                    return "Команта "+deleteRoomDto.getName()+" была удалена!";
+            } else
+                    return "Комнаты "+deleteRoomDto.getName()+" не существует!";
     }
 
     public String updateRoom(final RoomDto roomDto) {
-        if (!roomRepository.existsByName(roomDto.getName())) {
-            Room room  = roomRepository.findByName(roomDto.getName());
-            room.setName(roomDto.getName());
+        if (roomRepository.existsByName(roomDto.getName())) {
+            final Room room  = roomRepository.findByName(roomDto.getName());
             room.setDescription(roomDto.getDescription());
             roomRepository.save(room);
-            return "Команта "+roomDto.getName()+" была обновлена!";
+            return "Комната "+roomDto.getName()+" была обновлена!";
         } else
             return "Комнаты "+roomDto.getName()+" не существует!";
     }
@@ -60,28 +60,28 @@ public class RoomService {
     }
 
     public List<String> getNameRoomList(){
-        List<Room> roomList = roomRepository.findAll();
-        List<String> nameRoomList = new ArrayList<>();
+        final List<Room> roomList = roomRepository.findAll();
+        final List<String> nameRoomList = new ArrayList<>();
         for (Room room: roomList) {
             nameRoomList.add(room.getName());
         }
         return nameRoomList;
     }
 
-    public RoomDto getRoomByName(String name) {
+    public RoomDto getRoom(final String name) {
         return roomConverter.convertToDto(roomRepository.findByName(name));
     }
 
-    private void setDefaultRoom(final NameRoomDto deleteRoomDto){
-        List<User> list = userRepository.findAllByRoom(roomRepository.findByName(deleteRoomDto.getName()));
+    private void setDefaultRoom(final String roomName){
+        final List<User> list = userRepository.findAllByRoom(roomRepository.findByName(roomName));
         for (User user : list){
             user.setRoom(roomRepository.findByName("Default room"));
             userRepository.save(user);
         }
     }
 
-    private void deleteMessageFromRoom(final NameRoomDto deleteRoomDto){
-        List<Message> list = messageRepository.findAllByRoom(roomRepository.findByName(deleteRoomDto.getName()));
+    private void deleteMessageFromRoom(final String roomName){
+        final List<Message> list = messageRepository.findAllByRoom(roomRepository.findByName(roomName));
         for (Message message : list){
             messageRepository.delete(message);
         }

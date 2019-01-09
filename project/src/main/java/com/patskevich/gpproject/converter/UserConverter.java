@@ -23,15 +23,10 @@ public class UserConverter {
         return userDto;
     }
 
-    public User convertToDbo(final UserDto userDto) {
-        final User user = new User();
-        BeanUtils.copyProperties(userDto, user);
-        return user;
-    }
 
     public User convertToDbo(final CreateUserDto createUserDto) {
         final User user = new User();
-        user.setLogin(createUserDto.getName());
+        user.setLogin(createUserDto.getLogin());
         user.setNickname(createUserDto.getNickname());
         user.setPassword(createUserDto.getPassword());
         user.setRoom(roomRepository.findByName("Default room"));

@@ -1,16 +1,18 @@
 package com.patskevich.gpproject.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "USER")
-public class User {
+@Table(name = "LOG")
+public class NicknameLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,15 +21,13 @@ public class User {
     private String login;
 
     @NotNull
-    private String nickname;
+    @Column(name="OLD_NICKNAME")
+    private String oldNickname;
 
     @NotNull
-    private String password;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "ROOM_ID", nullable = false)
-    private Room room;
+    @Column(name="NEW_NICKNAME")
+    private String newNickname;
 
     @NotNull
-    private String role;
+    private String date;
 }

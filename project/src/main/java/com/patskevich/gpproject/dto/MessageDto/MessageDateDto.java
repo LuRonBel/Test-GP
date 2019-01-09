@@ -5,8 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class MessageOutputDto {
-    private String message;
-    private String author;
-    private String date;
+public class MessageDateDto {
+    private String dateFrom;
+    private String dateTo;
 }

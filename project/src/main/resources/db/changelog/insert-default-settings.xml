@@ -12,8 +12,9 @@
     <changeSet author="patskevich" id="2.2">
         <insert tableName="USER">
             <column name="ID" valueNumeric="1"/>
-            <column name="NAME" value="root"/>
-            <column name="PASSWORD" value="root"/>
+            <column name="LOGIN" value="root"/>
+            <column name="PASSWORD" value="$2a$10$XjmVDJR9nRoxkRdauYfm5Or3jIMYuSENN9EC5gTBxLZfOufMfC68q"/>
+            <column name="NICKNAME" value="ADMIN"/>
             <column name="ROOM_ID" valueNumeric="1"/>
             <column name="ROLE" value="ROLE_ADMIN"/>
         </insert>

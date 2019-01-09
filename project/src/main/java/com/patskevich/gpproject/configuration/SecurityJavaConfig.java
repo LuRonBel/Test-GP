@@ -1,4 +1,4 @@
-package com.patskevich.gpproject.security;
+package com.patskevich.gpproject.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -10,16 +10,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
-
-    @Autowired
-    DataSource dataSource;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -29,12 +25,6 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-/*
-       auth
-                .inMemoryAuthentication()
-                .withUser("admin").password(encoder().encode("admin")).roles("ADMIN")
-                .and()
-                .withUser("user").password(encoder().encode("user")).roles("USER");*/
        auth.userDetailsService(userDetailsService).passwordEncoder(encoder());
     }
 
@@ -43,12 +33,14 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
 
          http.csrf().disable().authorizeRequests()
                     .antMatchers("/admin/**").hasRole("ADMIN")
+                    .antMatchers("swagger-ui.html").permitAll()
                     .anyRequest().authenticated()
                  .and()
                     .httpBasic()
                     .authenticationEntryPoint(authEntryPoint)
                  .and()
-                 .logout();
+                 .logout()
+                 .permitAll();
      }
 
     @Bean

@@ -1,4 +1,4 @@
-package com.patskevich.gpproject.security;
+package com.patskevich.gpproject.configuration;
 
 import java.io.IOException;
 import java.io.PrintWriter;

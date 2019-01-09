@@ -48,14 +48,14 @@ public class AdminController {
         return userService.changeRoleUser(userNameDto);
     }
 
-    @PostMapping("/change_user/{id}/change_name")
-    public String changeUserName(@RequestBody final String newName, @PathVariable("id") final Long id) {
-        return userService.updateUserNameAdmin(newName, id);
+    @PostMapping("/change_user/{login}/change_login")
+    public String changeUserName(@RequestBody final String newLogin, @PathVariable("login") final String login) {
+        return userService.updateUserLoginAdmin(newLogin, login);
     }
 
-    @PostMapping("/change_user/{id}/change_nickname")
-    public String changeUserNickname(@RequestBody final String newNickname, @PathVariable("id") final Long id) {
-        return userService.updateUserNicknameAdmin(newNickname, id);
+    @PostMapping("/change_user/{login}/change_nickname")
+    public String changeUserNickname(@RequestBody final String newNickname, @PathVariable("login") final String login) {
+        return userService.updateUserNicknameAdmin(newNickname, login);
     }
 
     @GetMapping("/change_history")
@@ -77,10 +77,4 @@ public class AdminController {
     public String deleteMessage(@PathVariable("id") final Long id) {
         return messageService.deleteMessage(id);
     }
-    /*
-     @PostMapping("/room_by_name")
-     public RoomDto getRoomByName(@RequestBody final NameRoomDto nameRoomDto) {
-     return roomService.getRoomByName(nameRoomDto);
-     }
-    */
 }

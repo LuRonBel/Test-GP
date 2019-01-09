@@ -5,8 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class MessageOutputDto {
+public class MessageCorrectDto {
+    private Long id;
     private String message;
-    private String author;
-    private String date;
 }

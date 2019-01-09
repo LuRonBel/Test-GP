@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 @Service
 public class LogoutService {
 
-    public String logoutUser (HttpServletRequest request, HttpServletResponse response) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    public String logoutUser (final HttpServletRequest request,final HttpServletResponse response) {
+        final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null){
             String name = auth.getName();
             new SecurityContextLogoutHandler().logout(request, response, auth);
@@ -20,9 +20,4 @@ public class LogoutService {
         }
         return "Вы не авторизованы";
     }
-
-    public void logout(){
-
-    }
-
 }

@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class UserDto{
+public class UserDto {
     private String login;
     private String nickname;
     private Room room;
