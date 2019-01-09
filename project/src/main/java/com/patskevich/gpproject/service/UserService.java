@@ -37,7 +37,7 @@ public class UserService {
             return "Пользователь "+createUserDto.getLogin()+" уже существует!";
     }
 
-    public String changeNickName(final UpdateUserDto updateUserDto, final String login) {
+    public String changeNicknameAndPass(final UpdateUserDto updateUserDto, final String login) {
             final User user = userRepository.findByLogin(login);
             final NicknameChangeHistory nicknameChangeHistory = new NicknameChangeHistory();
             nicknameChangeHistory.setNewNickname(updateUserDto.getNewNickname());
@@ -45,6 +45,7 @@ public class UserService {
             nicknameChangeHistory.setUserId(user.getId());
             nicknameChangeHistory.setDate(new Date());
             user.setNickname(updateUserDto.getNewNickname());
+            user.setPassword(encoder().encode(updateUserDto.getPassword()));
             nicknameChangeHistoryRepository.save(nicknameChangeHistory);
             userRepository.save(user);
             return "Данные пользователя "+login+" были изменены!";
