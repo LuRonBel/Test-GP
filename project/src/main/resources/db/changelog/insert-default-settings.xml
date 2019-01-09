@@ -19,4 +19,10 @@
             <column name="ROLE" value="ROLE_ADMIN"/>
         </insert>
     </changeSet>
+    <changeSet author="karengin" id="2.3">
+        <update tableName="USER">
+            <column name="NICKNAME" value="root"/>
+            <where> ID=1</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>

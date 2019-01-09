@@ -27,6 +27,7 @@ public class UserConverter {
     public User convertToDbo(final CreateUserDto createUserDto) {
         final User user = new User();
         user.setLogin(createUserDto.getLogin());
+        user.setNickname(createUserDto.getNickname());
         user.setPassword(createUserDto.getPassword());
         user.setRoom(roomRepository.findByName("Default room"));
         user.setRole("ROLE_USER");

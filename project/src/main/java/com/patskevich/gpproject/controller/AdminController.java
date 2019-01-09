@@ -1,13 +1,12 @@
 package com.patskevich.gpproject.controller;
 
-import com.patskevich.gpproject.dto.NicknameLogDto;
+import com.patskevich.gpproject.dto.NicknameChangeHistoryDto.NicknameChangeHistoryDto;
 import com.patskevich.gpproject.dto.RoomDto.NameRoomDto;
 import com.patskevich.gpproject.dto.RoomDto.RoomDto;
 import com.patskevich.gpproject.dto.UserDto.CreateUserDto;
 import com.patskevich.gpproject.dto.UserDto.UserDto;
 import com.patskevich.gpproject.dto.UserDto.UserNameDto;
 import com.patskevich.gpproject.service.MessageService;
-import com.patskevich.gpproject.service.NicknameLogService;
 import com.patskevich.gpproject.service.RoomService;
 import com.patskevich.gpproject.service.UserService;
 import lombok.AllArgsConstructor;
@@ -23,7 +22,6 @@ public class AdminController {
     private final RoomService roomService;
     private final UserService userService;
     private final MessageService messageService;
-    private final NicknameLogService nicknameLogService;
 
     @PostMapping("/create_room")
     public String createRoom(@RequestBody final RoomDto room) {
@@ -50,6 +48,21 @@ public class AdminController {
         return userService.changeRoleUser(userNameDto);
     }
 
+    @PostMapping("/change_user/{login}/change_login")
+    public String changeUserName(@RequestBody final String newLogin, @PathVariable("login") final String login) {
+        return userService.updateUserLoginAdmin(newLogin, login);
+    }
+
+    @PostMapping("/change_user/{login}/change_nickname")
+    public String changeUserNickname(@RequestBody final String newNickname, @PathVariable("login") final String login) {
+        return userService.updateUserNicknameAdmin(newNickname, login);
+    }
+
+    @GetMapping("/change_history")
+    public List<NicknameChangeHistoryDto> getHistory() {
+        return userService.getHistory();
+    }
+
     @DeleteMapping("/delete_user")
     public String deleteUser(@RequestBody final UserNameDto nameUserDto) {
         return userService.deleteUser(nameUserDto);
@@ -58,11 +71,6 @@ public class AdminController {
     @GetMapping("/list_user")
     public List<UserDto> getAllUser() {
         return userService.getUserList();
-    }
-
-    @GetMapping("/log")
-    public List<NicknameLogDto> getLog() {
-        return nicknameLogService.getNicknameLog();
     }
 
     @DeleteMapping("/delete_message/{id}")

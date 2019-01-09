@@ -1,10 +1,10 @@
 package com.patskevich.gpproject.UI;
 
-import com.patskevich.gpproject.dto.NicknameLogDto;
+import com.patskevich.gpproject.dto.NicknameChangeHistoryDto.NicknameChangeHistoryDto;
+import com.patskevich.gpproject.entity.NicknameChangeHistory;
 import com.patskevich.gpproject.service.UiService;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.*;
-import javafx.scene.chart.ValueAxis;
 
 public class AdminForm extends FormLayout {
     private final MyUI myUI;
@@ -29,7 +29,7 @@ public class AdminForm extends FormLayout {
     private final Button userCreateButton = new Button("create");
     private final Button userChangeRoleButton = new Button("change role");
     private final Panel adminPanel = new Panel("Admin Panel");
-    private final Grid<NicknameLogDto> logGrid = new Grid<>(NicknameLogDto.class);
+    private final Grid<NicknameChangeHistoryDto> logGrid = new Grid<>(NicknameChangeHistoryDto.class);
 
     private UiService uiService;
 
@@ -39,6 +39,7 @@ public class AdminForm extends FormLayout {
         addRoomAdminPanel();
         addUserAdminPanel();
         logGrid.setSizeFull();
+        logGrid.setColumns("userId","date","oldNickname","newNickname");
         verticalLayout.addComponent(log);
         horizontalLayout.addComponent(logGrid);
         verticalLayout.addComponent(horizontalLayout);

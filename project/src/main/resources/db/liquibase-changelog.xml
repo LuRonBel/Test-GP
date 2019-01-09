@@ -8,5 +8,4 @@
 
     <include file="changelog/initial-table.xml" relativeToChangelogFile="true"/>
     <include file="changelog/insert-default-settings.xml" relativeToChangelogFile="true"/>
-    <include file="changelog/log_table.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

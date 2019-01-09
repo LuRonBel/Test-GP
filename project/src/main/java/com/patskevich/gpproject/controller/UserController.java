@@ -25,9 +25,9 @@ public class UserController {
     private final RoomService roomService;
     private final MessageService messageService;
 
-    @PostMapping("/change_nickname")
+    @PostMapping("/change_nick_pass")
     public String changeUserNickname(@RequestBody final UpdateUserDto updateUserDto) {
-        return userService.changeUserNickname(updateUserDto, SecurityContextHolder
+        return userService.changeNicknameAndPass(updateUserDto, SecurityContextHolder
                 .getContext()
                 .getAuthentication().getName());
     }
@@ -72,10 +72,4 @@ public class UserController {
                 .getAuthentication().getName(), messageDateDto.getDateFrom(), messageDateDto.getDateTo());
     }
 
-    @PostMapping("/change_login")
-    public String changeUserLoginAndPass(@RequestBody final CreateUserDto createUserDto) {
-        return userService.changeUserLoginAndPass(createUserDto, SecurityContextHolder
-                .getContext()
-                .getAuthentication().getName());
-    }
 }

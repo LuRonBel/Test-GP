@@ -25,7 +25,6 @@ public class UiService {
     private final RoomService roomService;
     private final UserService userService;
     private final MessageService messageService;
-    private final NicknameLogService nicknameLogService;
 
     public void updateGrid(final String login, final Grid grid){
         grid.setItems(messageService.getRoomMessage(login));
@@ -129,13 +128,14 @@ public class UiService {
     }
 
     public void updateLogGrid(final Grid grid){
-        grid.setItems(nicknameLogService.getNicknameLog());
+        grid.setItems(userService.getHistory());
     }
 
     public String changeNickname(final String login, final String newNickname){
         UpdateUserDto user = new UpdateUserDto();
         user.setNewNickname(newNickname);
-        return userService.changeUserNickname(user, login);
+        //return userService.changeUserNickname(user, login);
+        return "null";
     }
 
     public String getNickname(final String login){

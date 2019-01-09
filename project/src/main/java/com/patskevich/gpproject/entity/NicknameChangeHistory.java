@@ -5,29 +5,26 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "USER")
-public class User {
+@Table(name = "NICKNAME_CHANGE_HISTORY")
+public class NicknameChangeHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    private String login;
+    private String oldNickname;
 
     @NotNull
-    private String nickname;
+    private String newNickname;
 
     @NotNull
-    private String password;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "ROOM_ID", nullable = false)
-    private Room room;
+    private Long userId;
 
     @NotNull
-    private String role;
+    private Date date;
 }
