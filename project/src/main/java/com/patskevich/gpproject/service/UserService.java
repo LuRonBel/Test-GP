@@ -29,64 +29,56 @@ public class UserService {
     private final NicknameChangeHistoryConverter nicknameChangeHistoryConverter;
 
     public String createUser(final CreateUserDto createUserDto) {
-        if (!userRepository.existsByName(createUserDto.getName())) {
-            userRepository.save(userConverter.convertToDbo(createUserDto));
-            return "Пользователь "+createUserDto.getName()+" был создан!";
+        if (!userRepository.existsByLogin(createUserDto.getLogin())) {
+                createUserDto.setPassword(encoder().encode(createUserDto.getPassword()));
+                userRepository.save(userConverter.convertToDbo(createUserDto));
+            return "Пользователь "+createUserDto.getLogin()+" был создан!";
         } else
-            return "Пользователь "+createUserDto.getName()+" уже существует!";
+            return "Пользователь "+createUserDto.getLogin()+" уже существует!";
     }
 
-    public String updateUser(final UpdateUserDto updateUserDto) {
-        if (!userRepository.existsByNickname(updateUserDto.getNewNickname())) {
-            User user = userRepository.findByName(SecurityContextHolder.getContext().getAuthentication().getName());
-            NicknameChangeHistory nicknameChangeHistory = new NicknameChangeHistory();
+    public String changeNickName(final UpdateUserDto updateUserDto, final String login) {
+            final User user = userRepository.findByLogin(login);
+            final NicknameChangeHistory nicknameChangeHistory = new NicknameChangeHistory();
             nicknameChangeHistory.setNewNickname(updateUserDto.getNewNickname());
             nicknameChangeHistory.setOldNickname(user.getNickname());
             nicknameChangeHistory.setUserId(user.getId());
             nicknameChangeHistory.setDate(new Date());
             user.setNickname(updateUserDto.getNewNickname());
-            user.setPassword(updateUserDto.getNewPassword());
             nicknameChangeHistoryRepository.save(nicknameChangeHistory);
             userRepository.save(user);
-            return "Данные пользователя "+SecurityContextHolder.getContext().getAuthentication().getName()+" были изменены!";
-        } else
-            return "Пользователь с именем "+updateUserDto.getNewNickname()+" уже существует!";
+            return "Данные пользователя "+login+" были изменены!";
     }
 
-    public String updateUserNameAdmin(final String newName, final Long id) {
-        User user = userRepository.getById(id);
-        if (user.getName().equals(newName)) {
+    public String updateUserLoginAdmin(final String newLogin, final String login) {
+        final User user = userRepository.findByLogin(login);
+        if (user.getLogin().equals(newLogin)) {
             return "Введенные данные совпадают со старыми";
         }
-        User findByName = userRepository.findByName(newName);
-        if (findByName != null && !findByName.getId().equals(user.getId())) {
-            return "Пользователь с логином "+newName+" уже существует!";
+        final User findByLogin = userRepository.findByLogin(newLogin);
+        if (findByLogin != null && !findByLogin.getId().equals(user.getId())) {
+            return "Пользователь с логином "+newLogin+" уже существует!";
         }  else {
-            user.setName(newName);
+            user.setLogin(newLogin);
             userRepository.save(user);
             return "Данные успешно изменены";
         }
     }
 
-    public String updateUserNicknameAdmin(final String newNickname, final Long id) {
-        User user = userRepository.getById(id);
+    public String updateUserNicknameAdmin(final String newNickname, final String login) {
+        final User user = userRepository.findByLogin(login);
         if (user.getNickname().equals(newNickname)) {
             return "Введенные данные совпадают со старыми";
         }
-        User findByNickname = userRepository.findByNickname(newNickname);
-        if (findByNickname != null && !findByNickname.getId().equals(user.getId())) {
-            return "Пользователь с никнеймом "+newNickname+" уже существует!";
-        }  else {
-            NicknameChangeHistory nicknameChangeHistory = new NicknameChangeHistory();
-            nicknameChangeHistory.setNewNickname(newNickname);
-            nicknameChangeHistory.setOldNickname(user.getNickname());
-            nicknameChangeHistory.setUserId(user.getId());
-            nicknameChangeHistory.setDate(new Date());
-            user.setNickname(newNickname);
-            nicknameChangeHistoryRepository.save(nicknameChangeHistory);
-            userRepository.save(user);
-            return "Данные успешно изменены";
-        }
+        final NicknameChangeHistory nicknameChangeHistory = new NicknameChangeHistory();
+        nicknameChangeHistory.setNewNickname(newNickname);
+        nicknameChangeHistory.setOldNickname(user.getNickname());
+        nicknameChangeHistory.setUserId(user.getId());
+        nicknameChangeHistory.setDate(new Date());
+        user.setNickname(newNickname);
+        nicknameChangeHistoryRepository.save(nicknameChangeHistory);
+        userRepository.save(user);
+        return "Данные успешно изменены";
     }
 
     public List<NicknameChangeHistoryDto> getHistory() {
@@ -99,45 +91,45 @@ public class UserService {
     }
 
     public String deleteUser(final UserNameDto nameUserDto) {
-        if (userRepository.existsByName(nameUserDto.getName())) {
-            userRepository.delete(userRepository.findByName(nameUserDto.getName()));
-            return "Пользователь "+nameUserDto.getName()+" был удален!";
-        } else
-            return "Пользователя "+nameUserDto.getName()+" не существует!";
+        if (nameUserDto.getName().equals("root")) return "Этого пользователя удалить нельзя!";
+        else if (userRepository.existsByLogin(nameUserDto.getName())) {
+                 userRepository.delete(userRepository.findByLogin(nameUserDto.getName()));
+                 return "Пользователь "+nameUserDto.getName()+" был удален!";
+             } else
+                 return "Пользователя "+nameUserDto.getName()+" не существует!";
     }
 
-    public UserDto getUser(final String name) {
-        return userConverter.convertToDto(userRepository.findByName(name));
+    public User getUser(final String name) {
+        return userRepository.findByLogin(name);
     }
 
-    public String changeRoom(final UserChangeRoom userChangeRoom) {
-        if (roomRepository.existsByName(userChangeRoom.getRoom())) {
-            User user = userRepository.findByName(SecurityContextHolder.getContext().getAuthentication().getName());
-            user.setRoom(roomRepository.findByName(userChangeRoom.getRoom()));
+    public String changeRoom(final NameRoomDto nameRoomDto, final String login) {
+        if (roomRepository.existsByName(nameRoomDto.getName())) {
+            final User user = userRepository.findByLogin(login);
+            user.setRoom(roomRepository.findByName(nameRoomDto.getName()));
             userRepository.save(user);
-            return "Пользователь "+SecurityContextHolder.getContext().getAuthentication().getName()+" переместился в комнату "+userChangeRoom.getRoom()+"!";
+            return "Пользователь "+login+" переместился в комнату "+nameRoomDto.getName()+"!";
         } else
-            return "Комнаты с именем "+userChangeRoom.getRoom()+" не существует!";
+            return "Комнаты с именем "+nameRoomDto.getName()+" не существует!";
     }
 
-    public String changeRoom(final String name) {
+    public String changeRoom(final String name, final String login) {
         if (roomRepository.existsByName(name)) {
-            User user = userRepository.findByName(SecurityContextHolder.getContext().getAuthentication().getName());
+            final User user = userRepository.findByLogin(login);
             user.setRoom(roomRepository.findByName(name));
             userRepository.save(user);
-            return "Пользователь "+SecurityContextHolder.getContext().getAuthentication().getName()+" переместился в комнату "+name+"!";
+            return "Пользователь "+login+" переместился в комнату "+name+"!";
         } else
             return "Комнаты с именем "+name+" не существует!";
     }
 
     public String changeRoleUser(final UserNameDto userNameDto) {
-        if (userRepository.existsByName(userNameDto.getName())) {
-            User user = userRepository.findByName(userNameDto.getName());
-            if (user.getRole().equals("ROLE_USER")) user.setRole("ROLE_ADMIN");
-                    else user.setRole("ROLE_USER");
-            userRepository.save(user);
-            return "Пользователь "+userNameDto.getName()+" изменил роль на "+user.getRole();
-        } else
-            return "Пользователя с именем "+userNameDto.getName()+" не существует!";
+        if (userNameDto.getName().equals("root")) return "Нельзя изменить этого пользователя";
+            else if (userRepository.existsByLogin(userNameDto.getName())) {
+                final User user = userRepository.findByLogin(userNameDto.getName());
+                if (user.getRole().equals("ROLE_USER")) user.setRole("ROLE_ADMIN");
+                else user.setRole("ROLE_USER");
+                userRepository.save(user);
+                return "Пользователь "+userNameDto.getName()+" изменил роль на "+user.getRole();
+            } else return "Пользователя с именем "+userNameDto.getName()+" не существует!";
     }
-}
