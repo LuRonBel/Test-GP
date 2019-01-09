@@ -10,7 +10,6 @@ import com.patskevich.gpproject.repository.MessageRepository;
 import com.patskevich.gpproject.repository.RoomRepository;
 import com.patskevich.gpproject.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

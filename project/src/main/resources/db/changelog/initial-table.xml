@@ -81,7 +81,14 @@
             </column>
         </addColumn>
     </changeSet>
-    <changeSet author="karengin" id="1.8">
+    <changeSet id="1.8" author="bely">
+        <addColumn tableName="MESSAGE">
+            <column name="DATE" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="karengin" id="1.9">
         <createTable tableName="NICKNAME_CHANGE_HISTORY">
             <column name="ID" type="INT">
                 <constraints nullable="false"/>
@@ -100,7 +107,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="patskevich" id="1.9">
+    <changeSet author="karengin" id="1.10">
         <addPrimaryKey columnNames="ID" constraintName="id_PK" tableName="NICKNAME_CHANGE_HISTORY"/>
         <addAutoIncrement columnDataType="int"
                           columnName="ID"
@@ -109,3 +116,4 @@
                           tableName="NICKNAME_CHANGE_HISTORY"/>
     </changeSet>
 </databaseChangeLog>
+

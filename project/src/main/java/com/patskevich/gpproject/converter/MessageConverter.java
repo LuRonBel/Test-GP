@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
+
 
 @AllArgsConstructor
 @Service
@@ -16,10 +16,13 @@ public class MessageConverter {
 
     private final UserRepository userRepository;
 
+    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
+
     public MessageOutputDto convertToDto(final Message message) {
         final MessageOutputDto messageOutputDto= new MessageOutputDto();
         messageOutputDto.setMessage(message.getMessage());
         messageOutputDto.setAuthor(message.getAuthor().getNickname());
+        messageOutputDto.setDate(message.getDate());
         return messageOutputDto;
     }
 

@@ -20,9 +20,8 @@ public class UserForm extends FormLayout {
         setSizeUndefined();
         update.addClickListener(e->{
            if (!name.isEmpty()){
-               uiService.changeNickname(myUI.auth.getName(), name.getValue());
+               uiService.updateLog(log, uiService.changeNickname(myUI.auth.getName(), name.getValue()));
                uiService.updateGrid(myUI.auth.getName(), myUI.messageGrid);
-               uiService.updateLog(log, "Успешно");
                nickname.setValue("Nickname: "+uiService.getNickname(myUI.auth.getName()));
            } else uiService.updateLog(log,"Введите данные!");
         });

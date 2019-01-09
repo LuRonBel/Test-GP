@@ -128,7 +128,7 @@ public class MyUI extends UI {
     }
 
     private void addGridPanel() {
-        messageGrid.setColumns("author", "message");
+        messageGrid.setColumns("date","author", "message");
         messageGrid.setFrozenColumnCount(1);
         messageGrid.getColumn("author").setMinimumWidth(150);
         messageGrid.getColumn("author").setWidth(150);

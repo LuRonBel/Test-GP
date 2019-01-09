@@ -21,7 +21,7 @@
     </changeSet>
     <changeSet author="karengin" id="2.3">
         <update tableName="USER">
-            <column name="NICKNAME" value="root"/>
+            <column name="NICKNAME" value="ADMIN"/>
             <where> ID=1</where>
         </update>
     </changeSet>

@@ -4,20 +4,16 @@ import com.patskevich.gpproject.converter.MessageConverter;
 import com.patskevich.gpproject.dto.MessageDto.MessageCorrectDto;
 import com.patskevich.gpproject.dto.MessageDto.MessageInputDto;
 import com.patskevich.gpproject.dto.MessageDto.MessageOutputDto;
-import com.patskevich.gpproject.dto.RoomDto.NameRoomDto;
 import com.patskevich.gpproject.entity.Message;
-import com.patskevich.gpproject.entity.Room;
 import com.patskevich.gpproject.repository.MessageRepository;
 import com.patskevich.gpproject.repository.RoomRepository;
 import com.patskevich.gpproject.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+
+import java.time.LocalDate;
+import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,19 +55,38 @@ public class MessageService {
         } else return "Cообщения с ID № "+ id +" не существует!";
     }
 
-    public String correctMessage(final MessageCorrectDto messageCorrectDto, final String login) {
+    public String editMessage(final MessageCorrectDto messageCorrectDto, final String login) {
         if (messageRepository.existsById(messageCorrectDto.getId())) {
-            final Message message = messageRepository.getById(messageCorrectDto.getId());
-            if (userRepository.findByLogin(login).getRole().equals("ROLE_ADMIN")) {
-                message.setMessage(messageCorrectDto.getMessage() + " | edited by admin");
+            if (userRepository
+                    .findByLogin(login)
+                    .getRole()
+                    .equals("ROLE_ADMIN")) {
+                final Message message = messageRepository.getById(messageCorrectDto.getId());
+                message.setMessage(messageCorrectDto.getMessage()+" | edited by admin");
                 messageRepository.save(message);
-                return "Сообщение с ID № " + messageCorrectDto.getId() + " было отредактировано!";
-            } else if (message.getAuthor().getLogin().equals(login)) {
-                message.setMessage(messageCorrectDto.getMessage() + " | edited");
-                messageRepository.save(message);
-                return "Сообщение с ID № " + messageCorrectDto.getId() + " было отредактировано!";
-            } else return "У вас недостаточно прав";
-        } else return "Такого сообщения не существует!";
+                return "Сообщение было отредактировано администратором!";
+            } else {
+                if (messageRepository.getById(messageCorrectDto.getId()).getAuthor()
+                        .equals(
+                                userRepository.findByLogin(login))) {
+                    final Message message = messageRepository.getById(messageCorrectDto.getId());
+                    message.setMessage(messageCorrectDto.getMessage()+" | edited");
+                    messageRepository.save(message);
+                    return "Сообщение было отредактировано!";
+                } else {
+                    return "Вы не можете отредактировать чужое сообщение";
+                }
+            }
+        }
+        return "Ошибка при редактировании сообщения!";
     }
 
+    public List<MessageOutputDto> findMessages(final String fromDate, final String toDate, final String login) {
+        final Date from = Date.valueOf(LocalDate.parse(fromDate).plusDays(1));
+        final Date to = Date.valueOf(LocalDate.parse(toDate).plusDays(1));
+        return messageRepository.findByRoomAndDateBetween(userRepository.findByLogin(login).getRoom(), from, to)
+                .stream()
+                .map(messageConverter::convertToDto)
+                .collect(Collectors.toList());
+    }
 }

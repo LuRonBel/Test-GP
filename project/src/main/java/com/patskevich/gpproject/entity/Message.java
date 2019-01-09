@@ -3,11 +3,16 @@ package com.patskevich.gpproject.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.sql.Date;
 import java.util.Set;
 
 @Data
@@ -33,4 +38,9 @@ public class Message {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Room room;
+
+    @CreationTimestamp
+    @Column(name = "DATE", nullable = false)
+    private Date date;
+
 }

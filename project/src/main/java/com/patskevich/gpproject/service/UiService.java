@@ -112,7 +112,6 @@ public class UiService {
         CreateUserDto user = new CreateUserDto();
         user.setLogin(login);
         user.setPassword(password);
-        user.setNickname("New user");
         return userService.createUser(user);
     }
 
@@ -133,10 +132,7 @@ public class UiService {
     }
 
     public String changeNickname(final String login, final String newNickname){
-        UpdateUserDto user = new UpdateUserDto();
-        user.setNewNickname(newNickname);
-        //return userService.changeUserNickname(user, login);
-        return "null";
+        return userService.updateUserNicknameAdmin(newNickname, login);
     }
 
     public String getNickname(final String login){

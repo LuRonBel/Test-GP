@@ -31,13 +31,6 @@ public class UserController {
                 .getAuthentication().getName());
     }
 
-    @PostMapping("/correct_message")
-    public String correctMessage(@RequestBody final MessageCorrectDto messageCorrectDto) {
-        return messageService.correctMessage(messageCorrectDto, SecurityContextHolder
-                .getContext()
-                .getAuthentication().getName());
-    }
-
     @PostMapping("/change_room")
     public String changeRoom(@RequestBody final NameRoomDto nameRoomDto) {
         return userService.changeRoom(nameRoomDto,SecurityContextHolder
@@ -60,6 +53,22 @@ public class UserController {
     @GetMapping("/list_message")
     public List<MessageOutputDto> getRoomMessage () {
         return messageService.getRoomMessage(SecurityContextHolder
+                .getContext()
+                .getAuthentication().getName());
+    }
+
+    @PutMapping("/edit_message")
+    public String editMessage(@RequestBody final MessageCorrectDto messageCorrectDto) {
+        return messageService.editMessage(messageCorrectDto, SecurityContextHolder
+                .getContext()
+                .getAuthentication().getName());
+    }
+
+    @GetMapping("/search")
+    public List<MessageOutputDto> findMessages(
+            @RequestParam(name = "fromDate") final String fromDate,
+            @RequestParam(name = "toDate") final String toDate) {
+        return messageService.findMessages(fromDate, toDate, SecurityContextHolder
                 .getContext()
                 .getAuthentication().getName());
     }

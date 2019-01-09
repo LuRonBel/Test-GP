@@ -5,7 +5,6 @@ import com.patskevich.gpproject.dto.UserDto.UserDto;
 import com.patskevich.gpproject.entity.User;
 import com.patskevich.gpproject.repository.RoomRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 @AllArgsConstructor
@@ -27,7 +26,7 @@ public class UserConverter {
     public User convertToDbo(final CreateUserDto createUserDto) {
         final User user = new User();
         user.setLogin(createUserDto.getLogin());
-        user.setNickname(createUserDto.getNickname());
+        user.setNickname("New user");
         user.setPassword(createUserDto.getPassword());
         user.setRoom(roomRepository.findByName("Default room"));
         user.setRole("ROLE_USER");
