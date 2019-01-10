@@ -152,6 +152,10 @@ public class UserService {
         return nameUserList;
     }
 
+    public Long getUserCount(){
+        return userRepository.count();
+    }
+
     @Autowired
     private PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();

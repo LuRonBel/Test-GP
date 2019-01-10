@@ -44,6 +44,17 @@ public class RoomService {
                     return "Комнаты "+deleteRoomDto.getName()+" не существует!";
     }
 
+    public String deleteRoom(final RoomDto roomDto) {
+        if (roomDto.getName().equals("Default room")) return "Эту комнату удалить нельзя!";
+        else if (roomRepository.existsByName(roomDto.getName())) {
+            setDefaultRoom(roomDto.getName());
+            deleteMessageFromRoom(roomDto.getName());
+            roomRepository.delete(roomRepository.findByName(roomDto.getName()));
+            return "Команта "+roomDto.getName()+" была удалена!";
+        } else
+            return "Комнаты "+roomDto.getName()+" не существует!";
+    }
+
     public String updateRoom(final RoomDto roomDto) {
         if (roomRepository.existsByName(roomDto.getName())) {
             final Room room  = roomRepository.findByName(roomDto.getName());
@@ -58,6 +69,22 @@ public class RoomService {
         return roomRepository.findAll().stream().map(roomConverter::convertToDto).collect(Collectors.toList());
     }
 
+    public List<RoomDto> getRoomList(final String filter) {
+        if (filter==null) {
+            return roomRepository.findAll().stream().map(roomConverter::convertToDto).collect(Collectors.toList());
+        }
+        else {
+            final List<RoomDto> list = roomRepository.findAll().stream().map(roomConverter::convertToDto).collect(Collectors.toList());
+            final List<RoomDto> sortedList = new ArrayList<>();
+            for (RoomDto room:list) {
+                if (room.getName().toLowerCase().contains(filter.toLowerCase())){
+                    sortedList.add(room);
+                }
+            }
+            return sortedList;
+        }
+    }
+
     public List<String> getNameRoomList(){
         final List<Room> roomList = roomRepository.findAll();
         final List<String> nameRoomList = new ArrayList<>();
@@ -69,6 +96,22 @@ public class RoomService {
 
     public RoomDto getRoom(final String name) {
         return roomConverter.convertToDto(roomRepository.findByName(name));
+    }
+
+    public Long getRoomCount(final String filter){
+        if (filter==null) {
+            return roomRepository.count();
+        }
+        else {
+            final List<RoomDto> list = roomRepository.findAll().stream().map(roomConverter::convertToDto).collect(Collectors.toList());
+            Long count = 0l;
+            for (RoomDto room:list) {
+                if (room.getName().toLowerCase().contains(filter.toLowerCase())){
+                    count++;
+                }
+            }
+            return count;
+        }
     }
 
     private void setDefaultRoom(final String roomName){
@@ -85,4 +128,5 @@ public class RoomService {
             messageRepository.delete(message);
         }
     }
+
 }
