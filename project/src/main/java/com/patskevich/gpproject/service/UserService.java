@@ -144,7 +144,7 @@ public class UserService {
         }
         else {
             final List<UserDto> list = userRepository.findAll().stream().map(userConverter::convertToDto).collect(Collectors.toList());
-            Long count = 0L;
+            Long count = 0l;
             for (UserDto user:list) {
                 if (user.getLogin().toLowerCase().contains(filter.toLowerCase())){
                     count++;

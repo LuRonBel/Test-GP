@@ -25,4 +25,13 @@
             <where> ID=1</where>
         </update>
     </changeSet>
+    <changeSet author="bely" id="2.3">
+        <insert tableName="USER">
+            <column name="ID" valueNumeric="2"/>
+            <column name="NAME" value="user"/>
+            <column name="PASSWORD" value="user"/>
+            <column name="ROOM_ID" valueNumeric="1"/>
+            <column name="ROLE" value="ROLE_USER"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

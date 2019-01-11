@@ -115,5 +115,11 @@
                           startWith="1"
                           tableName="NICKNAME_CHANGE_HISTORY"/>
     </changeSet>
+    <changeSet id="1.11" author="bely">
+        <addColumn tableName="MESSAGE">
+            <column name="DATE" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
-

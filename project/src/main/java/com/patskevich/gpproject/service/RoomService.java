@@ -108,7 +108,7 @@ public class RoomService {
         }
         else {
             final List<RoomDto> list = roomRepository.findAll().stream().map(roomConverter::convertToDto).collect(Collectors.toList());
-            Long count = 0L;
+            Long count = 0l;
             for (RoomDto room:list) {
                 if (room.getName().toLowerCase().contains(filter.toLowerCase())){
                     count++;

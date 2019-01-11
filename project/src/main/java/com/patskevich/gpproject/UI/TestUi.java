@@ -28,9 +28,13 @@ public class TestUi extends UI implements ViewDisplay {
         Label tittle = new Label("Menu");
         tittle.addStyleName(ValoTheme.MENU_ITEM);
 
-        Button rooms = new Button("Rooms", e-> getUI().getNavigator().navigateTo(RoomView.NAME));
+        Button rooms = new Button("Rooms", e->{
+            getUI().getNavigator().navigateTo(RoomView.NAME);
+        });
         rooms.addStyleNames(ValoTheme.BUTTON_LINK,ValoTheme.MENU_ITEM);
-        Button users = new Button("Users", e-> getUI().getNavigator().navigateTo(UsersView.NAME));
+        Button users = new Button("Users", e->{
+            getUI().getNavigator().navigateTo(UsersView.NAME);
+        });
         users.addStyleNames(ValoTheme.BUTTON_LINK,ValoTheme.MENU_ITEM);
 
         menu.addComponents(tittle,rooms,users);
