@@ -98,13 +98,17 @@ public class RoomService {
         return roomConverter.convertToDto(roomRepository.findByName(name));
     }
 
+    public Room getRoomEntity(final String name) {
+        return roomRepository.findByName(name);
+    }
+
     public Long getRoomCount(final String filter){
         if (filter==null) {
             return roomRepository.count();
         }
         else {
             final List<RoomDto> list = roomRepository.findAll().stream().map(roomConverter::convertToDto).collect(Collectors.toList());
-            Long count = 0l;
+            Long count = 0L;
             for (RoomDto room:list) {
                 if (room.getName().toLowerCase().contains(filter.toLowerCase())){
                     count++;

@@ -4,6 +4,7 @@ import com.patskevich.gpproject.converter.NicknameChangeHistoryConverter;
 import com.patskevich.gpproject.converter.UserConverter;
 import com.patskevich.gpproject.dto.RoomDto.NameRoomDto;
 import com.patskevich.gpproject.dto.NicknameChangeHistoryDto.NicknameChangeHistoryDto;
+import com.patskevich.gpproject.dto.RoomDto.RoomDto;
 import com.patskevich.gpproject.dto.UserDto.*;
 import com.patskevich.gpproject.entity.NicknameChangeHistory;
 import com.patskevich.gpproject.entity.User;
@@ -37,6 +38,28 @@ public class UserService {
             return "Пользователь "+createUserDto.getLogin()+" был создан!";
         } else
             return "Пользователь "+createUserDto.getLogin()+" уже существует!";
+    }
+
+    public String createUser(final CreateUserDtoUi createUserDtoUi) {
+        if (!userRepository.existsByLogin(createUserDtoUi.getLogin())) {
+            createUserDtoUi.setPassword(encoder().encode(createUserDtoUi.getPassword()));
+            userRepository.save(userConverter.convertToDbo(createUserDtoUi));
+            return "Пользователь "+createUserDtoUi.getLogin()+" был создан!";
+        } else
+            return "Пользователь "+createUserDtoUi.getLogin()+" уже существует!";
+    }
+
+    public String updateUserUi(final CreateUserDtoUi createUserDtoUi, final String login){
+        if (!userRepository.existsByLogin(createUserDtoUi.getLogin())){
+            final User user = userRepository.findByLogin(login);
+            user.setLogin(createUserDtoUi.getLogin());
+            user.setNickname(createUserDtoUi.getNickname());
+            user.setPassword(encoder().encode(createUserDtoUi.getPassword()));
+            user.setRoom(createUserDtoUi.getRoom());
+            user.setRole(createUserDtoUi.getRole());
+            userRepository.save(user);
+            return "Данные пользователя были обновлены";
+        } else return "Пользователь с таким логином уже существует";
     }
 
     public String changeNicknameAndPass(final UpdateUserDto updateUserDto, final String login) {
@@ -99,6 +122,38 @@ public class UserService {
         return userRepository.findAll().stream().map(userConverter::convertToDto).collect(Collectors.toList());
     }
 
+    public List<UserDto> getUserList(final String filter) {
+        if (filter==null) {
+            return userRepository.findAll().stream().map(userConverter::convertToDto).collect(Collectors.toList());
+        }
+        else {
+            final List<UserDto> list = userRepository.findAll().stream().map(userConverter::convertToDto).collect(Collectors.toList());
+            final List<UserDto> sortedList = new ArrayList<>();
+            for (UserDto user:list) {
+                if (user.getLogin().toLowerCase().contains(filter.toLowerCase())){
+                    sortedList.add(user);
+                }
+            }
+            return sortedList;
+        }
+    }
+
+    public Long getUserCount(final String filter){
+        if (filter==null) {
+            return userRepository.count();
+        }
+        else {
+            final List<UserDto> list = userRepository.findAll().stream().map(userConverter::convertToDto).collect(Collectors.toList());
+            Long count = 0L;
+            for (UserDto user:list) {
+                if (user.getLogin().toLowerCase().contains(filter.toLowerCase())){
+                    count++;
+                }
+            }
+            return count;
+        }
+    }
+
     public String deleteUser(final UserNameDto nameUserDto) {
         if (nameUserDto.getName().equals("root")) return "Этого пользователя удалить нельзя!";
         else if (userRepository.existsByLogin(nameUserDto.getName())) {
@@ -106,6 +161,15 @@ public class UserService {
                  return "Пользователь "+nameUserDto.getName()+" был удален!";
              } else
                  return "Пользователя "+nameUserDto.getName()+" не существует!";
+    }
+
+    public String deleteUser(final UserDto userDto) {
+        if (userDto.getLogin().equals("root")) return "Этого пользователя удалить нельзя!";
+        else if (userRepository.existsByLogin(userDto.getLogin())) {
+            userRepository.delete(userRepository.findByLogin(userDto.getLogin()));
+            return "Пользователь "+userDto.getLogin()+" был удален!";
+        } else
+            return "Пользователя "+userDto.getLogin()+" не существует!";
     }
 
     public User getUser(final String name) {
@@ -154,6 +218,10 @@ public class UserService {
 
     public Long getUserCount(){
         return userRepository.count();
+    }
+
+    public UserRepository getUserRepository(){
+        return userRepository;
     }
 
     @Autowired

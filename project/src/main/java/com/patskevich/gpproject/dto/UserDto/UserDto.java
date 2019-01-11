@@ -1,6 +1,5 @@
 package com.patskevich.gpproject.dto.UserDto;
 
-import com.patskevich.gpproject.entity.Room;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +8,6 @@ import lombok.NoArgsConstructor;
 public class UserDto {
     private String login;
     private String nickname;
-    private Room room;
+    private String room;
     private String role;
 }

@@ -4,6 +4,7 @@ import com.patskevich.gpproject.dto.RoomDto.RoomDto;
 import com.patskevich.gpproject.service.RoomService;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
+import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
 import lombok.AllArgsConstructor;
 
@@ -16,7 +17,7 @@ public class EditRoomWindow extends Window {
     private final FormLayout editRoomForm = new FormLayout();
     private final HorizontalLayout buttonsLayout = new HorizontalLayout();
     private final TextField roomNameField = new TextField("Name: ");
-    private final TextField roomDescriptionFiled = new TextField(" New description");
+    private final TextField roomDescriptionField = new TextField(" New description");
     private final Button saveButton = new Button("Save");
     private final Button cancelButton = new Button("Cancel");
 
@@ -30,7 +31,7 @@ public class EditRoomWindow extends Window {
         mainLayout.addComponent(buttonsLayout);
         roomNameField.setEnabled(false);
         editRoomForm.addComponent(roomNameField);
-        editRoomForm.addComponent(roomDescriptionFiled);
+        editRoomForm.addComponent(roomDescriptionField);
         buttonsLayout.addComponent(saveButton);
         buttonsLayout.addComponent(cancelButton);
         settingBinder();
@@ -39,8 +40,14 @@ public class EditRoomWindow extends Window {
 
     private void settingBinder() {
         roomDtoBinder.forField(roomNameField)
+                .withValidator(new StringLengthValidator(
+                "Name must be between 1 and 10 characters long",
+                1, 10))
                 .bind(RoomDto::getName, RoomDto::setName);
-        roomDtoBinder.forField(roomDescriptionFiled)
+        roomDtoBinder.forField(roomDescriptionField)
+                .withValidator(new StringLengthValidator(
+                        "Description must be between 1 and 20 characters long",
+                        1, 20))
                 .bind(RoomDto::getDescription, RoomDto::setDescription);
         roomDtoBinder.readBean(room);
     }
@@ -48,12 +55,16 @@ public class EditRoomWindow extends Window {
     private void addEventListener(final RoomService roomService) {
         saveButton.addClickListener(clickEvent -> {
             try {
-                roomDtoBinder.writeBean(room);
-                Notification.show(roomService.updateRoom(room));
+                if (roomDtoBinder.isValid()) {
+                    roomDtoBinder.writeBean(room);
+                    Notification.show(roomService.updateRoom(room));
+                    this.close();
+                } else {
+                    Notification.show("Error", "Form is't validate", Notification.Type.WARNING_MESSAGE);
+                }
             } catch (ValidationException e) {
                 Notification.show("Wrong value");
             }
-            this.close();
         });
         cancelButton.addClickListener(clickEvent -> {
             roomDtoBinder.readBean(room);

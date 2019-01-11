@@ -4,6 +4,7 @@ import com.patskevich.gpproject.dto.RoomDto.RoomDto;
 import com.patskevich.gpproject.service.RoomService;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
+import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
 import lombok.AllArgsConstructor;
 
@@ -38,8 +39,14 @@ public class AddRoomWindow extends Window {
     private void settingBinder() {
         roomDtoBinder.readBean(room);
         roomDtoBinder.forField(roomNameField)
+                .withValidator(new StringLengthValidator(
+                       "Name must be between 1 and 10 characters long",
+                       1, 10))
                 .bind(RoomDto::getName, RoomDto::setName);
         roomDtoBinder.forField(roomDescriptionFiled)
+                .withValidator(new StringLengthValidator(
+                        "Description must be between 1 and 20 characters long",
+                        1, 20))
                 .bind(RoomDto::getDescription, RoomDto::setDescription);
     }
 
@@ -47,13 +54,16 @@ public class AddRoomWindow extends Window {
     private void addEventListener(final RoomService roomService) {
         saveButton.addClickListener(clickEvent -> {
             try {
-                roomDtoBinder.writeBean(room);
-                System.out.println(room.getName());
-                Notification.show(roomService.createRoom(room));
+                if (roomDtoBinder.isValid()) {
+                    roomDtoBinder.writeBean(room);
+                    Notification.show(roomService.createRoom(room));
+                    this.close();
+                } else {
+                    Notification.show("Error", "Form is't validate", Notification.Type.WARNING_MESSAGE);
+                }
             } catch (ValidationException e) {
                 Notification.show("Wrong value");
             }
-            this.close();
         });
 
         cancelButton.addClickListener(clickEvent -> {
