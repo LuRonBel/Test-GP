@@ -83,17 +83,8 @@ public class RoomService {
     }
 
     public Long getRoomCount(final String filter){
-        if (filter==null) {
-            return roomRepository.count();
-        }
-        else {
-            final List<RoomDto> list = roomRepository.findAll().stream().map(roomConverter::convertToDto).collect(Collectors.toList());
-            Long count = 0l;
-            for (RoomDto room:list) {
-                if (room.getName().toLowerCase().contains(filter.toLowerCase())) count++;
-            }
-            return count;
-        }
+        if (filter==null) return roomRepository.count();
+            else return (long) this.getRoomList(filter).size();
     }
 
     private void setDefaultRoom(final String roomName){

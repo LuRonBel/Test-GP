@@ -87,9 +87,7 @@ public class UserService {
             else {
                 final User user = userRepository.findByLogin(login);
                 if (user.getLogin().equals(newLogin)) return LanguageMessage.getText("error.create");
-                final User findByLogin = userRepository.findByLogin(newLogin);
-                if (findByLogin != null && !findByLogin.getId().equals(user.getId()))
-                    return LanguageMessage.getText("user.exists");
+                if (userRepository.existsByLogin(newLogin)) return LanguageMessage.getText("user.exists");
                 else {
                     user.setLogin(newLogin);
                     userRepository.save(user);

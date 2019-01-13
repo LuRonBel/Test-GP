@@ -29,6 +29,7 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
          http.csrf().disable().authorizeRequests()
                     .antMatchers("/admin/**").hasRole("ADMIN")
                     .antMatchers("swagger-ui.html").permitAll()
+                    .antMatchers("/logout").permitAll()
                     .anyRequest().authenticated()
                  .and()
                     .httpBasic()

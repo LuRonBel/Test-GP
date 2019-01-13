@@ -3,6 +3,7 @@ package com.patskevich.gpproject.service;
 import com.patskevich.gpproject.configuration.LanguageMessage;
 import com.patskevich.gpproject.converter.MessageConverter;
 import com.patskevich.gpproject.dto.MessageDto;
+import com.patskevich.gpproject.dto.UserDto;
 import com.patskevich.gpproject.entity.Message;
 import com.patskevich.gpproject.entity.RoleEnum;
 import com.patskevich.gpproject.repository.MessageRepository;

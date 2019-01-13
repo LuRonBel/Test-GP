@@ -10,10 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 public class LogoutController {
 
-    public static final String CURRENT_PAGE_URL = "/admin";
+    private static final String CURRENT_PAGE_URL = "/logout";
     private final LogoutService logoutService;
 
-    @RequestMapping(value = LogoutController.CURRENT_PAGE_URL, method = RequestMethod.GET)
+    @PostMapping(LogoutController.CURRENT_PAGE_URL)
     public String logoutUser (final HttpServletRequest request, final HttpServletResponse response) {
         return logoutService.logoutUser(request, response);
     }

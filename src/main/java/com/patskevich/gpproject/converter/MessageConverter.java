@@ -6,8 +6,6 @@ import com.patskevich.gpproject.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-
 @AllArgsConstructor
 @Service
 public class MessageConverter {

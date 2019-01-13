@@ -1,9 +1,11 @@
 package com.patskevich.gpproject.converter;
 
 import com.patskevich.gpproject.MockDataMessage;
+import com.patskevich.gpproject.MockDataRoom;
 import com.patskevich.gpproject.MockDataUser;
 import com.patskevich.gpproject.dto.MessageDto;
 import com.patskevich.gpproject.entity.Message;
+import com.patskevich.gpproject.entity.Room;
 import com.patskevich.gpproject.entity.User;
 import com.patskevich.gpproject.repository.UserRepository;
 import org.junit.Test;
@@ -25,31 +27,26 @@ public class MessageConverterTest {
 
     @Test
     public void convertToDto() {
-
         final User author = MockDataUser.getUser();
         final Message message = MockDataMessage.getMessage();
         message.setAuthor(author);
-
         final MessageDto messageDto = messageConverter.convertToDto(message);
 
         assertEquals(messageDto.getMessage(), message.getMessage());
         assertEquals(messageDto.getAuthor(), message.getAuthor().getNickname());
     }
-/*
+
     @Test
     public void convertToDbo() {
-
-        final Room room = MockDataRoom.getRoom();
+        final String message = "message";
         final User author = MockDataUser.getUser();
-        final MessageInputDto messageInputDto = MockDataMessage.getMessageInputDto();
+        final Room room = MockDataRoom.getRoom();
         author.setRoom(room);
-
         doReturn(author).when(userRepository).findByLogin(author.getLogin());
+        final Message answer = messageConverter.convertToDbo(message,author.getLogin());
 
-        final Message message = messageConverter.convertToDbo(messageInputDto,author.getLogin());
-
-        assertEquals(author, message.getAuthor());
-        assertEquals(room, message.getRoom());
-        assertEquals(messageInputDto.getMessage(), message.getMessage());
-    }*/
+        assertEquals(author, answer.getAuthor());
+        assertEquals(room, answer.getRoom());
+        assertEquals(message, answer.getMessage());
+    }
 }

@@ -9,13 +9,11 @@ import static org.junit.Assert.*;
 
 public class RoomConverterTest {
 
-    private RoomConverter roomConverter = new RoomConverter();
+    private final RoomConverter roomConverter = new RoomConverter();
 
     @Test
     public void convertToDto() {
-
         final Room room = MockDataRoom.getRoom();
-
         final RoomDto roomDto = roomConverter.convertToDto(room);
 
         assertEquals(room.getName(), roomDto.getName());
@@ -24,9 +22,7 @@ public class RoomConverterTest {
 
     @Test
     public void convertToDbo() {
-
         final RoomDto roomDto = MockDataRoom.getRoomDto();
-
         final Room room = roomConverter.convertToDbo(roomDto);
 
         assertEquals(room.getName(), roomDto.getName());

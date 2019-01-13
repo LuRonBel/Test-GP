@@ -7,7 +7,7 @@ public class MockDataRoom {
 
     public static Room getRoom() {
         final Room room = new Room();
-        room.setId(new Long(1));
+        room.setId(1L);
         room.setName("name");
         room.setDescription("description");
         return room;
