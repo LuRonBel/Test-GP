@@ -11,12 +11,10 @@ import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.*;
-import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
 public class EditUserWindow extends AbstractEditAddWindow<CreateUserDtoUi> {
 
     private final List<String> rooms = new ArrayList<>();
@@ -79,20 +77,22 @@ public class EditUserWindow extends AbstractEditAddWindow<CreateUserDtoUi> {
             try {
                 if (binder.isValid()) {
                     binder.writeBean(value);
-                    Notification.show(userService.updateUserUi(value, userLoginField.getValue()));
+                    Notification.show(userService.updateUserUi(value, userLoginField.getValue()),
+                            Notification.Type.HUMANIZED_MESSAGE);
                     this.close();
                 } else{
-                    Notification.show(LanguageMessage.getText("error"),
-                            LanguageMessage.getText("valid.error"),
-                            Notification.Type.WARNING_MESSAGE);
+                    Notification.show(LanguageMessage.getText("valid.error"),
+                            Notification.Type.ERROR_MESSAGE);
                 }
             } catch (ValidationException e) {
-                Notification.show(LanguageMessage.getText("wrong.value"));
+                Notification.show(LanguageMessage.getText("wrong.value"),
+                        Notification.Type.ERROR_MESSAGE);
             }
         });
         cancelButton.addClickListener(clickEvent -> {
             binder.readBean(value);
-            Notification.show(LanguageMessage.getText("cancel"));
+            Notification.show(LanguageMessage.getText("cancel"),
+                    Notification.Type.WARNING_MESSAGE);
             this.close();
         });
     }

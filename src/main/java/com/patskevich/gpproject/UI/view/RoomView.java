@@ -6,12 +6,11 @@ import com.patskevich.gpproject.dto.RoomDto;
 import com.patskevich.gpproject.service.RoomService;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.components.grid.MultiSelectionModel;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 
@@ -19,10 +18,12 @@ import static java.lang.Math.toIntExact;
 
 @SpringView(name = RoomView.NAME)
 @AllArgsConstructor
+@UIScope
 public class RoomView extends AbstractViewGrid<RoomDto> {
 
     public static final String NAME = "";
     private RoomService roomService;
+    private AddRoomWindow addRoomWindow;
 
     @PostConstruct
     void init() {
@@ -54,12 +55,11 @@ public class RoomView extends AbstractViewGrid<RoomDto> {
     @Override
     protected void setEventListeners() {
         addButton.addClickListener(clickEvent -> {
-            final Window window = new AddRoomWindow(roomService);
-            window.addCloseListener(closeEvent -> dataProvider.refreshAll());
-            getUI().addWindow(window);
+            addRoomWindow.addCloseListener(closeEvent -> dataProvider.refreshAll());
+            getUI().addWindow(addRoomWindow);
         });
         editButton.addClickListener(clickEvent -> grid.getSelectedItems().forEach(roomDto -> {
-                    final Window window = new EditRoomWindow(roomDto, roomService);
+                    final EditRoomWindow window = new EditRoomWindow(roomDto, roomService);
                     window.addCloseListener(closeEvent -> dataProvider.refreshAll());
                     getUI().addWindow(window);
                 }));

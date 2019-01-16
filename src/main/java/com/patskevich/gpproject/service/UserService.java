@@ -14,7 +14,6 @@ import com.patskevich.gpproject.repository.NicknameChangeHistoryRepository;
 import com.patskevich.gpproject.repository.RoomRepository;
 import com.patskevich.gpproject.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -58,28 +57,32 @@ public class UserService {
     public String updateUserUi(final CreateUserDtoUi createUserDtoUi, final String login){
         if (!userRepository.existsByLogin(createUserDtoUi.getLogin())){
             final User user = userRepository.findByLogin(login);
-            user.setLogin(createUserDtoUi.getLogin());
-            user.setNickname(createUserDtoUi.getNickname());
-            user.setPassword(encoder().encode(createUserDtoUi.getPassword()));
-            user.setRoom(createUserDtoUi.getRoom());
-            user.setRole(createUserDtoUi.getRole());
-            userRepository.save(user);
-            return LanguageMessage.getText("successfully");
+            if (user!=null) {
+                user.setLogin(createUserDtoUi.getLogin());
+                user.setNickname(createUserDtoUi.getNickname());
+                user.setPassword(encoder().encode(createUserDtoUi.getPassword()));
+                user.setRoom(createUserDtoUi.getRoom());
+                user.setRole(createUserDtoUi.getRole());
+                userRepository.save(user);
+                return LanguageMessage.getText("successfully");
+            } else return LanguageMessage.getText("user.not.found");
         } else return LanguageMessage.getText("error.create");
     }
 
     public String changeNicknameAndPass(final String newNickname, final String newPassword, final String login) {
         final User user = userRepository.findByLogin(login);
-        final NicknameChangeHistory nicknameChangeHistory = new NicknameChangeHistory();
-        nicknameChangeHistory.setNewNickname(newNickname);
-        nicknameChangeHistory.setOldNickname(user.getNickname());
-        nicknameChangeHistory.setUserId(user.getId());
-        nicknameChangeHistory.setDate(new Date());
-        user.setNickname(newNickname);
-        user.setPassword(encoder().encode(newPassword));
-        nicknameChangeHistoryRepository.save(nicknameChangeHistory);
-        userRepository.save(user);
-        return LanguageMessage.getText("successfully");
+        if (user!=null) {
+            final NicknameChangeHistory nicknameChangeHistory = new NicknameChangeHistory();
+            nicknameChangeHistory.setNewNickname(newNickname);
+            nicknameChangeHistory.setOldNickname(user.getNickname());
+            nicknameChangeHistory.setUserId(user.getId());
+            nicknameChangeHistory.setDate(new Date());
+            user.setNickname(newNickname);
+            user.setPassword(encoder().encode(newPassword));
+            nicknameChangeHistoryRepository.save(nicknameChangeHistory);
+            userRepository.save(user);
+            return LanguageMessage.getText("successfully");
+        } return LanguageMessage.getText("user.not.found");
     }
 
     public String updateUserLoginAdmin(final String newLogin, final String login) {
@@ -181,7 +184,6 @@ public class UserService {
         return userRepository;
     }
 
-    @Autowired
     private PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }

@@ -9,10 +9,8 @@ import com.vaadin.data.provider.DataProvider;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.components.grid.MultiSelectionModel;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 
@@ -25,6 +23,7 @@ public class UsersView extends AbstractViewGrid<UserDto> {
     public static final String NAME = "users";
     private UserService userService;
     private RoomService roomService;
+    private AddUserWindow addUserWindow;
 
     @PostConstruct
     void init() {
@@ -56,12 +55,11 @@ public class UsersView extends AbstractViewGrid<UserDto> {
     @Override
     protected void setEventListeners() {
         addButton.addClickListener(clickEvent -> {
-            final Window window = new AddUserWindow(userService, roomService);
-            window.addCloseListener(closeEvent -> dataProvider.refreshAll());
-            getUI().addWindow(window);
+            addUserWindow.addCloseListener(closeEvent -> dataProvider.refreshAll());
+            getUI().addWindow(addUserWindow);
         });
         editButton.addClickListener(clickEvent -> grid.getSelectedItems().forEach(userDto -> {
-                    final Window window = new EditUserWindow(userDto, userService, roomService);
+                    final EditUserWindow window = new EditUserWindow(userDto, userService, roomService);
                     window.addCloseListener(closeEvent -> dataProvider.refreshAll());
                     getUI().addWindow(window);
                 }));
