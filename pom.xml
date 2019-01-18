@@ -21,6 +21,7 @@
 	<properties>
 		<java.version>1.8</java.version>
 		<vaadin.version>8.6.3</vaadin.version>
+		<vaadin-spring.version>3.0.0</vaadin-spring.version>
 	</properties>
 
 	<dependencies>
@@ -99,6 +100,29 @@
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-themes</artifactId>
 			<version>${vaadin.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-spring-boot</artifactId>
+			<version>${vaadin-spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-spring</artifactId>
+			<version>${vaadin-spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-spring-security</artifactId>
+			<version>${vaadin-spring.version}</version>
 		</dependency>
 	</dependencies>
 

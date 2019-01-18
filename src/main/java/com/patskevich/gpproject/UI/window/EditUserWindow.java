@@ -10,11 +10,18 @@ import com.patskevich.gpproject.service.UserService;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.spring.annotation.UIScope;
+import com.vaadin.spring.annotation.ViewScope;
 import com.vaadin.ui.*;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component("EditUserWindow")
+@Secured("ROLE_ADMIN")
+@UIScope
 public class EditUserWindow extends AbstractEditAddWindow<CreateUserDtoUi> {
 
     private final List<String> rooms = new ArrayList<>();
@@ -25,14 +32,10 @@ public class EditUserWindow extends AbstractEditAddWindow<CreateUserDtoUi> {
     private final RoomField roomField;
     private final RadioButtonGroup<String> roleRadioButton = new RadioButtonGroup<>(LanguageMessage.getText("role.select"));
 
-    public EditUserWindow(final UserDto userDto,
-                          final UserService userService,
-                          final RoomService roomService){
+    public EditUserWindow(final UserService userService,final RoomService roomService){
         super(LanguageMessage.getText("edit.user"));
         binder = new Binder<>();
-        this.value = createUserDtoUi(userDto, userService);
         roleRadioButton.setItems(RoleEnum.ROLE_ADMIN.toString(),RoleEnum.ROLE_USER.toString());
-        userLoginField.setValue(userDto.getLogin());
         fillRoomsList(roomService);
         roomField = new RoomField(roomService,LanguageMessage.getText("rooms"), rooms);
         userLoginField.setEnabled(false);
@@ -95,6 +98,12 @@ public class EditUserWindow extends AbstractEditAddWindow<CreateUserDtoUi> {
                     Notification.Type.WARNING_MESSAGE);
             this.close();
         });
+    }
+
+    public void setBean(final UserDto userDto, final UserService userService){
+        this.value = createUserDtoUi(userDto, userService);
+        userLoginField.setValue(userDto.getLogin());
+        binder.readBean(value);
     }
 
     private void fillRoomsList(final RoomService roomService) {

@@ -6,7 +6,6 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.spring.annotation.ViewScope;
 import com.vaadin.ui.*;
 
-@ViewScope
 public abstract class AbstractEditAddWindow<T> extends Window {
 
     protected T value;

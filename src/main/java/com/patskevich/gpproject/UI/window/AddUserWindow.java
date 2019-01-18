@@ -9,6 +9,7 @@ import com.patskevich.gpproject.service.UserService;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.spring.annotation.ViewScope;
 import com.vaadin.ui.*;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@ViewScope
 public class AddUserWindow extends AbstractEditAddWindow<CreateUserDtoUi> {
 
     private final List<String> rooms = new ArrayList<>();

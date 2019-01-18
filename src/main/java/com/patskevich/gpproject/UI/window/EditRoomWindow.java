@@ -6,17 +6,22 @@ import com.patskevich.gpproject.service.RoomService;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.stereotype.Component;
 
+@Component("EditRoomWindow")
+@Secured("ROLE_ADMIN")
+@UIScope
 public class EditRoomWindow extends AbstractEditAddWindow<RoomDto> {
 
     private final TextField roomNameField = new TextField(LanguageMessage.getText("name"));
     private final TextField roomDescriptionField = new TextField(LanguageMessage.getText("new.description"));
 
-    public EditRoomWindow(final RoomDto roomDto, final RoomService roomService){
+    public EditRoomWindow(final RoomService roomService){
         super(LanguageMessage.getText("edit.room"));
         binder = new Binder<>();
-        this.value = roomDto;
         roomNameField.setEnabled(false);
         form.addComponents(roomNameField, roomDescriptionField);
         settingBinder();
@@ -35,6 +40,11 @@ public class EditRoomWindow extends AbstractEditAddWindow<RoomDto> {
                         LanguageMessage.getText("not.null"),
                         1, 20))
                 .bind(RoomDto::getDescription, RoomDto::setDescription);
+        binder.readBean(value);
+    }
+
+    public void setBean(final RoomDto roomDto){
+        this.value = roomDto;
         binder.readBean(value);
     }
 

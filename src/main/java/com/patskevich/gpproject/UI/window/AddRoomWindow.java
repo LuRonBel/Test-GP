@@ -6,10 +6,12 @@ import com.patskevich.gpproject.service.RoomService;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.spring.annotation.ViewScope;
 import com.vaadin.ui.*;
 import org.springframework.stereotype.Component;
 
 @Component
+@ViewScope
 public class AddRoomWindow extends  AbstractEditAddWindow<RoomDto> {
 
     private final TextField roomNameField = new TextField(LanguageMessage.getText("name"));

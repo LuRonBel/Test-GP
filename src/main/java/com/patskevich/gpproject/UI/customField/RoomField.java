@@ -1,5 +1,6 @@
 package com.patskevich.gpproject.UI.customField;
 
+import com.patskevich.gpproject.configuration.LanguageMessage;
 import com.patskevich.gpproject.entity.Room;
 import com.patskevich.gpproject.service.RoomService;
 import com.vaadin.data.provider.DataProvider;
@@ -55,7 +56,7 @@ public class RoomField extends CustomField<Room> {
                 roomsComboBox.setVisible(false);
                 addButton.setVisible(false);
             } else {
-                Notification.show("Error", "Form is't validate", Notification.Type.WARNING_MESSAGE);
+                Notification.show(LanguageMessage.getText("error"), LanguageMessage.getText("valid.error"), Notification.Type.WARNING_MESSAGE);
             }
         });
         roomsComboBox.addValueChangeListener(valueChangeEvent -> {

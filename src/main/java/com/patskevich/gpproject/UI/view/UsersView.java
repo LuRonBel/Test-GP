@@ -2,15 +2,19 @@ package com.patskevich.gpproject.UI.view;
 
 import com.patskevich.gpproject.UI.window.AddUserWindow;
 import com.patskevich.gpproject.UI.window.EditUserWindow;
+import com.patskevich.gpproject.configuration.LanguageMessage;
 import com.patskevich.gpproject.dto.UserDto;
-import com.patskevich.gpproject.service.RoomService;
 import com.patskevich.gpproject.service.UserService;
 import com.vaadin.data.provider.DataProvider;
+import com.vaadin.spring.access.SecuredViewAccessControl;
 import com.vaadin.spring.annotation.SpringView;
+import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.components.grid.MultiSelectionModel;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
@@ -18,12 +22,16 @@ import static java.lang.Math.toIntExact;
 
 @SpringView(name = UsersView.NAME)
 @AllArgsConstructor
+@Secured("ROLE_ADMIN")
+@Component(UsersView.NAME)
+@UIScope
 public class UsersView extends AbstractViewGrid<UserDto> {
 
     public static final String NAME = "users";
     private UserService userService;
-    private RoomService roomService;
     private AddUserWindow addUserWindow;
+    private EditUserWindow editUserWindow;
+    private SecuredViewAccessControl accessControl;
 
     @PostConstruct
     void init() {
@@ -59,10 +67,14 @@ public class UsersView extends AbstractViewGrid<UserDto> {
             getUI().addWindow(addUserWindow);
         });
         editButton.addClickListener(clickEvent -> grid.getSelectedItems().forEach(userDto -> {
-                    final EditUserWindow window = new EditUserWindow(userDto, userService, roomService);
-                    window.addCloseListener(closeEvent -> dataProvider.refreshAll());
-                    getUI().addWindow(window);
-                }));
+            if (accessControl.isAccessGranted(getUI(), "EditUserWindow")) {
+                editUserWindow.addCloseListener(closeEvent -> dataProvider.refreshAll());
+                editUserWindow.setBean(userDto, userService);
+                getUI().addWindow(editUserWindow);
+            } else {
+                Notification.show(LanguageMessage.getText("access.denied"), Notification.Type.WARNING_MESSAGE);
+            }
+        }));
         deleteButton.addClickListener(clickEvent -> {
             grid.getSelectedItems().forEach(userDto ->
                     Notification.show(userService.deleteUser(userDto.getLogin())));

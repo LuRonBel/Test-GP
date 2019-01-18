@@ -6,14 +6,14 @@ import com.vaadin.data.provider.DataProvider;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.spring.annotation.UIScope;
+import com.vaadin.server.Page;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.*;
 import com.vaadin.ui.components.grid.MultiSelectionModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@UIScope
 public abstract class AbstractViewGrid<T> extends VerticalLayout implements View {
 
     protected final HorizontalLayout headerLayout = new HorizontalLayout();
@@ -21,6 +21,7 @@ public abstract class AbstractViewGrid<T> extends VerticalLayout implements View
     protected final Button addButton = new Button(LanguageMessage.getText("add"));
     protected final Button editButton = new Button(LanguageMessage.getText("edit"));
     protected final Button deleteButton = new Button(LanguageMessage.getText("delete"));
+    protected final Button logoutButton = new Button(LanguageMessage.getText("logout"));
     protected final TextField nameFilteringTextField = new TextField();
 
     protected List<T> dtoList = new ArrayList<>();
@@ -32,12 +33,17 @@ public abstract class AbstractViewGrid<T> extends VerticalLayout implements View
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         grid.setSizeFull();
-        headerLayout.addComponents(tittle,addButton,editButton,deleteButton,nameFilteringTextField);
+        headerLayout.addComponents(tittle,addButton,editButton,deleteButton,nameFilteringTextField, logoutButton);
         editButton.setEnabled(false);
         deleteButton.setEnabled(false);
         addButton.setIcon(VaadinIcons.PLUS_CIRCLE);
         editButton.setIcon(VaadinIcons.COG);
         deleteButton.setIcon(VaadinIcons.CLOSE_CIRCLE);
+        logoutButton.setIcon(VaadinIcons.EXIT);
+        logoutButton.addClickListener(clickEvent -> {
+            Page.getCurrent().setLocation("/gpproject/login?logout");
+            VaadinSession.getCurrent().getSession().invalidate();
+        });
     }
 
     protected void settingSelectionModel() {
